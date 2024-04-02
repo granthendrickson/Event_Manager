@@ -6,7 +6,7 @@ export default function Register() {
 		username: '',
 		email: '',
 		password: '',
-		userLevel: 'Student', // Default value
+		user_level: 'Student', // Default value
 	});
 
 	// Function to handle input changes
@@ -15,9 +15,23 @@ export default function Register() {
 		setUser({ ...user, [name]: value });
 	};
 
-	// Function to handle button click
-	const handlePrintDetails = () => {
-		console.log(user);
+	const handleCreateUser = async () => {
+		try {
+			const response = await fetch('http://localhost:8080/Users', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(user),
+			});
+			if (!response.ok) {
+				throw new Error('Failed to create user');
+			}
+			const newUser = await response.json();
+			console.log('New user created:', newUser);
+		} catch (error) {
+			console.error('Error creating user:', error);
+		}
 	};
 
 	return (
@@ -46,14 +60,14 @@ export default function Register() {
 			<label>User Level:</label>
 			<select
 				name='userLevel'
-				value={user.userLevel}
+				value={user.user_level}
 				onChange={handleInputChange}
 			>
 				<option value='Student'>Student</option>
 				<option value='Admin'>Admin</option>
 				<option value='Super Admin'>Super Admin</option>
 			</select>
-			<button onClick={handlePrintDetails}>Print Details</button>
+			<button onClick={handleCreateUser}>Print Details</button>
 		</div>
 	);
 }

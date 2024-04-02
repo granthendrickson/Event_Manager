@@ -1,9 +1,19 @@
 import express from 'express';
-
+import cors from 'cors';
 import { getUser, getUsers, createUser } from './database.js';
 
 const app = express();
+
 app.use(express.json());
+
+// Enable CORS
+app.use(
+	cors({
+		origin: 'http://localhost:3000', // Allow requests from the origin where your React app is hosted
+		methods: ['GET', 'POST'], // Allow only specified methods
+		allowedHeaders: ['Content-Type', 'Authorization'], // Allow only specified headers
+	})
+);
 
 app.get('/Users', async (req, res) => {
 	const users = await getUsers();
