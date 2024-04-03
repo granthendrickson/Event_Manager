@@ -23,6 +23,9 @@ export default function Login() {
 	const toAdminPage = (user) => {
 		navigate('../pages/Admin.jsx', { state: user });
 	};
+	const toStudentPage = (user) => {
+		navigate('../pages/Student.jsx', { state: user });
+	};
 
 	const handleLogin = async () => {
 		try {
@@ -41,7 +44,12 @@ export default function Login() {
 			const LoggedInUser = response.data[0];
 			setLoginStatus(LoggedInUser.username);
 			console.log('Logged in as:', LoggedInUser);
-			toAdminPage(LoggedInUser);
+			if (LoggedInUser.user_level === 'admin') {
+				toAdminPage(LoggedInUser);
+			}
+			if (LoggedInUser.user_level === 'student') {
+				toStudentPage(LoggedInUser);
+			}
 		} catch (error) {
 			console.error('Error logging in:', error);
 		}
