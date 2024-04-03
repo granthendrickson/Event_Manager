@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 export default function Login() {
 	// Initialize state to store input values
@@ -6,6 +7,10 @@ export default function Login() {
 		username: '',
 		password: '',
 	});
+
+	const [loginStatus, setLoginStatus] = useState('');
+
+	axios.defaults.withCredentials = true;
 
 	// Function to handle input changes
 	const handleInputChange = (e) => {
@@ -15,22 +20,33 @@ export default function Login() {
 
 	const handleLogin = async () => {
 		try {
-			const response = await fetch('http://localhost:8080/Login', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify(user),
-			});
-			if (!response.ok) {
+			const response = await axios.post(
+				'http://localhost:8080/Login',
+				user,
+				{
+					headers: {
+						'Content-Type': 'application/json',
+					},
+				}
+			);
+			if (response.status !== 200) {
 				throw new Error('Failed to Login');
 			}
-			const LoggedInUser = await response.json();
+			const LoggedInUser = response.data.user[0];
+			setLoginStatus(LoggedInUser.username);
 			console.log('Logged in as:', LoggedInUser);
 		} catch (error) {
-			console.error('Error loggin in:', error);
+			console.error('Error logging in:', error);
 		}
 	};
+
+	useEffect(() => {
+		axios.get('http://localhost:8080/Login').then((response) => {
+			if (response.data.loggedIn === true) {
+				setLoginStatus(response.data.user[0].username);
+			}
+		});
+	}, []);
 
 	return (
 		<div className='login'>
@@ -49,6 +65,7 @@ export default function Login() {
 				onChange={handleInputChange}
 			/>
 			<button onClick={handleLogin}>Login</button>
+			<div className='username'>{loginStatus}</div>
 		</div>
 	);
 }

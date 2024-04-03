@@ -2,7 +2,13 @@ import express from 'express';
 import cors from 'cors';
 import mysql from 'mysql2';
 import dotenv from 'dotenv';
+
+import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+import session from 'express-session';
+
 import bcrypt from 'bcrypt';
+const saltRounds = 10;
 
 dotenv.config();
 
@@ -15,11 +21,24 @@ app.use(
 	cors({
 		origin: 'http://localhost:3000', // Allow requests from the origin where your React app is hosted
 		methods: ['GET', 'POST'], // Allow only specified methods
+		credentials: true,
 		allowedHeaders: ['Content-Type', 'Authorization'], // Allow only specified headers
 	})
 );
+app.use(cookieParser());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-const saltRounds = 10;
+app.use(
+	session({
+		key: 'user_id',
+		secret: 'secret',
+		resave: false,
+		saveUninitialized: false,
+		cookie: {
+			expires: 60 * 60 * 24,
+		},
+	})
+);
 
 const pool = mysql
 	.createPool({
@@ -71,6 +90,14 @@ app.post('/Register', async (req, res) => {
 	}
 });
 
+app.get('/Login', (req, res) => {
+	if (req.session.user) {
+		res.send({ loggedIn: true, user: req.session.user });
+	} else {
+		res.send({ loggedIn: false });
+	}
+});
+
 app.post('/Login', async (req, res) => {
 	const { username, password } = req.body;
 
@@ -83,6 +110,7 @@ app.post('/Login', async (req, res) => {
 		if (result.length > 0) {
 			const match = await bcrypt.compare(password, result[0].password);
 			if (match) {
+				req.session.user = result;
 				res.send(result);
 			} else {
 				res.send({ message: 'Wrong username/password combination!' });
