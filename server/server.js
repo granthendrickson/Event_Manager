@@ -29,9 +29,18 @@ app.get('/Users/:user_id', async (req, res) => {
 app.post('/Register', async (req, res) => {
 	const { username, password, email, user_level } = req.body;
 
-	const user = await createUser(username, password, email, user_level);
-	console.log(user);
-	res.status(201).send(user);
+	try {
+		const user = await createUser(username, password, email, user_level);
+		console.log(user);
+		res.status(201).send(user);
+	} catch (error) {
+		if (error.message === 'Username already exists') {
+			res.status(400).send({ error: 'Username already exists' });
+		} else {
+			console.error('Error creating user:', error);
+			res.status(500).send({ error: 'Internal server error' });
+		}
+	}
 });
 
 app.listen(8080, () => {

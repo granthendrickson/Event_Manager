@@ -49,8 +49,14 @@ export async function createUser(username, password, email, user_level) {
 		const newUser = await getUser(id);
 		return newUser;
 	} catch (error) {
-		console.error('Error creating user:', error);
-		throw error;
+		// Check if the error is due to duplicate username
+		if (error.code === 'ER_DUP_ENTRY') {
+			console.error('Username already exists:', username);
+			throw new Error('Username already exists');
+		} else {
+			console.error('Error creating user:', error);
+			throw error;
+		}
 	}
 }
 
