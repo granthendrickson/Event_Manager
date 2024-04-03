@@ -178,10 +178,14 @@ app.get('/UserEvents/:user_id', async (req, res) => {
 		const user = await getUser(user_id);
 		const university_id = user.university_id;
 
-		// Fetch events with public or private visibility and matching university_id
+		// Fetch events that the user has access to
 		const [events] = await pool.query(
-			`SELECT * FROM Events WHERE visibility = 'public' OR (visibility = 'private' AND university_id = ?)`,
-			[university_id]
+			`SELECT * FROM Events 
+					WHERE (visibility = 'public' OR (visibility = 'private' AND university_id = ?)) 
+					OR (visibility = 'rso' AND EXISTS 
+							(SELECT 1 FROM UserRSOMemberships 
+							WHERE user_id = ? AND rso_id = Events.rso_id))`,
+			[university_id, user_id]
 		);
 
 		res.send(events);
