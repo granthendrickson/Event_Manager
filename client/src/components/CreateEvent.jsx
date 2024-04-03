@@ -14,6 +14,7 @@ export default function CreateEvent() {
 		visibility: 'public', // Default value
 		approval_status: 'pending', // Default value
 		rso_id: '', // Default value
+		university_id: '',
 	});
 
 	// Function to handle input changes
@@ -145,6 +146,15 @@ export default function CreateEvent() {
 						type='text'
 						name='rso_id'
 						value={event.rso_id}
+						onChange={handleInputChange}
+					/>
+				</div>
+				<div className='inputField'>
+					<label>University ID:</label>
+					<input
+						type='text'
+						name='university_id'
+						value={event.university_id}
 						onChange={handleInputChange}
 					/>
 				</div>

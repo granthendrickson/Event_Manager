@@ -137,12 +137,13 @@ app.post('/Events', async (req, res) => {
 		visibility,
 		approval_status,
 		rso_id,
+		university_id,
 	} = req.body;
 
 	try {
 		const [result] = await pool.query(
-			`INSERT INTO Events (name, category, description, time, date, location_id, contact_phone, contact_email, visibility, approval_status, rso_id)
-					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+			`INSERT INTO Events (name, category, description, time, date, location_id, contact_phone, contact_email, visibility, approval_status, rso_id, university_id)
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 			[
 				name,
 				category,
@@ -155,6 +156,7 @@ app.post('/Events', async (req, res) => {
 				visibility,
 				approval_status,
 				rso_id,
+				university_id,
 			]
 		);
 
@@ -164,6 +166,27 @@ app.post('/Events', async (req, res) => {
 		res.status(201).send(newEvent);
 	} catch (error) {
 		console.error('Error creating event:', error);
+		res.status(500).send({ error: 'Internal server error' });
+	}
+});
+
+app.get('/UserEvents/:user_id', async (req, res) => {
+	const user_id = req.params.user_id;
+
+	try {
+		// Retrieve the user's university_id
+		const user = await getUser(user_id);
+		const university_id = user.university_id;
+
+		// Fetch events with public or private visibility and matching university_id
+		const [events] = await pool.query(
+			`SELECT * FROM Events WHERE visibility = 'public' OR (visibility = 'private' AND university_id = ?)`,
+			[university_id]
+		);
+
+		res.send(events);
+	} catch (error) {
+		console.error('Error fetching user events:', error);
 		res.status(500).send({ error: 'Internal server error' });
 	}
 });
