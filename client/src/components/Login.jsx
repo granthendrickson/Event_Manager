@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 export default function Login() {
@@ -18,6 +19,11 @@ export default function Login() {
 		setUser({ ...user, [name]: value });
 	};
 
+	const navigate = useNavigate();
+	const toAdminPage = (user) => {
+		navigate('../pages/Admin.jsx', { state: user });
+	};
+
 	const handleLogin = async () => {
 		try {
 			const response = await axios.post(
@@ -32,9 +38,10 @@ export default function Login() {
 			if (response.status !== 200) {
 				throw new Error('Failed to Login');
 			}
-			const LoggedInUser = response.data.user[0];
+			const LoggedInUser = response.data[0];
 			setLoginStatus(LoggedInUser.username);
 			console.log('Logged in as:', LoggedInUser);
+			toAdminPage(LoggedInUser);
 		} catch (error) {
 			console.error('Error logging in:', error);
 		}
