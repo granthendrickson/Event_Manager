@@ -124,6 +124,148 @@ app.post('/Login', async (req, res) => {
 	}
 });
 
+app.post('/Events', async (req, res) => {
+	const {
+		name,
+		category,
+		description,
+		time,
+		date,
+		location_id,
+		contact_phone,
+		contact_email,
+		visibility,
+		approval_status,
+		rso_id,
+	} = req.body;
+
+	try {
+		const [result] = await pool.query(
+			`INSERT INTO Events (name, category, description, time, date, location_id, contact_phone, contact_email, visibility, approval_status, rso_id)
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+			[
+				name,
+				category,
+				description,
+				time,
+				date,
+				location_id,
+				contact_phone,
+				contact_email,
+				visibility,
+				approval_status,
+				rso_id,
+			]
+		);
+
+		const eventId = result.insertId;
+
+		const newEvent = await getEvent(eventId);
+		res.status(201).send(newEvent);
+	} catch (error) {
+		console.error('Error creating event:', error);
+		res.status(500).send({ error: 'Internal server error' });
+	}
+});
+
+async function getEvent(eventId) {
+	const [rows] = await pool.query(`SELECT * FROM Events WHERE event_id = ?`, [
+		eventId,
+	]);
+	return rows[0];
+}
+
+app.post('/Universities', async (req, res) => {
+	const { name, location, description, number_of_students, pictures } =
+		req.body;
+
+	try {
+		const [result] = await pool.query(
+			`INSERT INTO Universities (name, location, description, number_of_students, pictures)
+							VALUES (?, ?, ?, ?, ?)`,
+			[name, location, description, number_of_students, pictures]
+		);
+
+		const universityId = result.insertId;
+
+		const newUniversity = await getUniversity(universityId);
+		res.status(201).send(newUniversity);
+	} catch (error) {
+		console.error('Error creating university:', error);
+		res.status(500).send({ error: 'Internal server error' });
+	}
+});
+
+async function getUniversity(id) {
+	const [rows] = await pool.query(
+		`SELECT *
+			FROM Universities
+			WHERE university_id = ?`,
+		[id]
+	);
+	return rows[0];
+}
+
+app.post('/RSOs', async (req, res) => {
+	const { name, admin_id, university_id } = req.body;
+
+	try {
+		const [result] = await pool.query(
+			`INSERT INTO RSOs (name, admin_id, university_id)
+							VALUES (?, ?, ?)`,
+			[name, admin_id, university_id]
+		);
+
+		const rsoId = result.insertId;
+
+		const newRSO = await getRSO(rsoId);
+		res.status(201).send(newRSO);
+	} catch (error) {
+		console.error('Error creating RSO:', error);
+		res.status(500).send({ error: 'Internal server error' });
+	}
+});
+
+app.post('/Locations', async (req, res) => {
+	const { name, latitude, longitude } = req.body;
+
+	try {
+		const [result] = await pool.query(
+			`INSERT INTO Locations (name, latitude, longitude)
+							VALUES (?, ?, ?)`,
+			[name, latitude, longitude]
+		);
+
+		const locationId = result.insertId;
+
+		const newLocation = await getLocation(locationId);
+		res.status(201).send(newLocation);
+	} catch (error) {
+		console.error('Error creating location:', error);
+		res.status(500).send({ error: 'Internal server error' });
+	}
+});
+
+async function getLocation(id) {
+	const [rows] = await pool.query(
+		`SELECT *
+			FROM Locations
+			WHERE location_id = ?`,
+		[id]
+	);
+	return rows[0];
+}
+
+async function getRSO(id) {
+	const [rows] = await pool.query(
+		`SELECT *
+			FROM RSOs
+			WHERE rso_id = ?`,
+		[id]
+	);
+	return rows[0];
+}
+
 async function getUsers() {
 	const [rows] = await pool.query('SELECT * FROM Users');
 	return rows;
