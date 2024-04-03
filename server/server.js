@@ -1,6 +1,10 @@
 import express from 'express';
 import cors from 'cors';
-import { getUser, getUsers, createUser } from './database.js';
+import mysql from 'mysql2';
+import dotenv from 'dotenv';
+import bcrypt from 'bcrypt';
+
+dotenv.config();
 
 const app = express();
 
@@ -14,6 +18,17 @@ app.use(
 		allowedHeaders: ['Content-Type', 'Authorization'], // Allow only specified headers
 	})
 );
+
+const saltRounds = 10;
+
+const pool = mysql
+	.createPool({
+		host: process.env.MYSQL_HOST,
+		user: process.env.MYSQL_USER,
+		password: process.env.MYSQL_PASSWORD,
+		database: process.env.MYSQL_DATABASE,
+	})
+	.promise();
 
 app.get('/Users', async (req, res) => {
 	const users = await getUsers();
@@ -30,11 +45,24 @@ app.post('/Register', async (req, res) => {
 	const { username, password, email, user_level } = req.body;
 
 	try {
-		const user = await createUser(username, password, email, user_level);
-		console.log(user);
-		res.status(201).send(user);
+		const hash = await bcrypt.hash(password, saltRounds);
+
+		const [result] = await pool.query(
+			`
+                    INSERT INTO Users (username, password, email, user_level)
+                    VALUES (?,?,?,?)
+                    `,
+			[username, hash, email, user_level]
+		);
+
+		const id = result.insertId;
+
+		const newUser = await getUser(id);
+		res.status(201).send(newUser);
 	} catch (error) {
-		if (error.message === 'Username already exists') {
+		// Check if the error is due to duplicate username
+		if (error.code === 'ER_DUP_ENTRY') {
+			console.error('Username already exists:', username);
 			res.status(400).send({ error: 'Username already exists' });
 		} else {
 			console.error('Error creating user:', error);
@@ -42,6 +70,23 @@ app.post('/Register', async (req, res) => {
 		}
 	}
 });
+
+async function getUsers() {
+	const [rows] = await pool.query('SELECT * FROM Users');
+	return rows;
+}
+
+async function getUser(id) {
+	const [rows] = await pool.query(
+		`
+    SELECT *
+    FROM Users
+    WHERE user_id = ?
+    `,
+		[id]
+	);
+	return rows[0];
+}
 
 app.listen(8080, () => {
 	console.log('Server is running on port 8080...');
