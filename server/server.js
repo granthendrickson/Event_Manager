@@ -71,6 +71,31 @@ app.post('/Register', async (req, res) => {
 	}
 });
 
+app.post('/Login', async (req, res) => {
+	const { username, password } = req.body;
+
+	try {
+		const [result] = await pool.query(
+			'SELECT * FROM Users WHERE username = ?;',
+			username
+		);
+
+		if (result.length > 0) {
+			const match = await bcrypt.compare(password, result[0].password);
+			if (match) {
+				res.send(result);
+			} else {
+				res.send({ message: 'Wrong username/password combination!' });
+			}
+		} else {
+			res.send({ message: "User doesn't exist!" });
+		}
+	} catch (error) {
+		console.error('Error logging in:', error);
+		res.status(500).send({ error: 'Internal server error' });
+	}
+});
+
 async function getUsers() {
 	const [rows] = await pool.query('SELECT * FROM Users');
 	return rows;

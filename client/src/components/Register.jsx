@@ -67,7 +67,7 @@ export default function Register() {
 				<option value='Admin'>Admin</option>
 				<option value='Super Admin'>Super Admin</option>
 			</select>
-			<button onClick={handleCreateUser}>Print Details</button>
+			<button onClick={handleCreateUser}>Register</button>
 		</div>
 	);
 }
