@@ -4,9 +4,11 @@ import React from 'react';
 import Register from '../components/Register';
 import Login from '../components/Login';
 
+import '../styles/loginRegister.css';
+
 export default function LoginOrRegister() {
 	return (
-		<div>
+		<div className='loginOrRegister'>
 			<Register />
 			<Login />
 		</div>

@@ -36,38 +36,52 @@ export default function Register() {
 
 	return (
 		<div className='register'>
-			<label>Username:</label>
-			<input
-				type='text'
-				name='username'
-				value={user.username}
-				onChange={handleInputChange}
-			/>
-			<label>Email:</label>
-			<input
-				type='text'
-				name='email'
-				value={user.email}
-				onChange={handleInputChange}
-			/>
-			<label>Password:</label>
-			<input
-				type='text'
-				name='password'
-				value={user.password}
-				onChange={handleInputChange}
-			/>
-			<label>User Level:</label>
-			<select
-				name='userLevel'
-				value={user.user_level}
-				onChange={handleInputChange}
-			>
-				<option value='Student'>Student</option>
-				<option value='Admin'>Admin</option>
-				<option value='Super Admin'>Super Admin</option>
-			</select>
-			<button onClick={handleCreateUser}>Register</button>
+			<div className='registerForm'>
+				<h1>Register</h1>
+				<div className='inputField'>
+					<label>Username:</label>
+					<input
+						type='text'
+						name='username'
+						value={user.username}
+						onChange={handleInputChange}
+					/>
+				</div>
+				<div className='inputField'>
+					<label>Email:</label>
+					<input
+						type='text'
+						name='email'
+						value={user.email}
+						onChange={handleInputChange}
+					/>
+				</div>
+				<div className='inputField'>
+					{' '}
+					<label>Password:</label>
+					<input
+						type='text'
+						name='password'
+						value={user.password}
+						onChange={handleInputChange}
+					/>
+				</div>
+				<div className='inputField'>
+					<label>User Level:</label>
+					<select
+						name='userLevel'
+						value={user.user_level}
+						onChange={handleInputChange}
+					>
+						<option value='Student'>Student</option>
+						<option value='Admin'>Admin</option>
+						<option value='Super Admin'>Super Admin</option>
+					</select>
+				</div>
+				<div className='buttonContainer'>
+					<button onClick={handleCreateUser}>Register</button>
+				</div>
+			</div>
 		</div>
 	);
 }

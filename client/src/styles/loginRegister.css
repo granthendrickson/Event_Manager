@@ -1,0 +1,54 @@
+.loginOrRegister {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: left;
+}
+
+.register {
+  width: 300px;
+  height: 500px;
+  border-radius: 10px 0px 0px 10px;
+  background-color: grey;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login {
+  width: 300px;
+  height: 500px;
+  border-radius: 0px 10px 10px 0px;
+  background-color: lightgray;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.inputField {
+  margin: 20px;
+}
+
+.buttonContainer {
+  text-align: center;
+}
+
+h1 {
+  margin: 20px;
+}
+
+input, label {
+  display: block;
+}
+
+input, select {
+  border-radius: 5px;
+  width: 200px;
+  height: 30px;
+}
+
+button {
+  margin: 20px;
+}

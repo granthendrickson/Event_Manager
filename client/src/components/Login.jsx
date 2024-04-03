@@ -50,22 +50,32 @@ export default function Login() {
 
 	return (
 		<div className='login'>
-			<label>Username:</label>
-			<input
-				type='text'
-				name='username'
-				value={user.username}
-				onChange={handleInputChange}
-			/>
-			<label>Password:</label>
-			<input
-				type='text'
-				name='password'
-				value={user.password}
-				onChange={handleInputChange}
-			/>
-			<button onClick={handleLogin}>Login</button>
-			<div className='username'>{loginStatus}</div>
+			<div className='loginForm'>
+				<h1>Login</h1>
+				<div className='inputField'>
+					<label>Username:</label>
+					<input
+						type='text'
+						name='username'
+						value={user.username}
+						onChange={handleInputChange}
+					/>
+				</div>
+
+				<div className='inputField'>
+					<label>Password:</label>
+					<input
+						type='text'
+						name='password'
+						value={user.password}
+						onChange={handleInputChange}
+					/>
+				</div>
+				<div className='buttonContainer'>
+					<button onClick={handleLogin}>Login</button>
+					<div className='username'>{loginStatus}</div>
+				</div>
+			</div>
 		</div>
 	);
 }
