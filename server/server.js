@@ -2,6 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import { getUser, getUsers, createUser } from './database.js';
 
+import bcrypt from 'bcrypt';
+const saltRounds = 10;
+
 const app = express();
 
 app.use(express.json());
@@ -26,10 +29,17 @@ app.get('/Users/:user_id', async (req, res) => {
 	res.send(user);
 });
 
-app.post('/Users', async (req, res) => {
+app.post('/Register', async (req, res) => {
 	const { username, password, email, user_level } = req.body;
-	const user = await createUser(username, password, email, user_level);
-	res.status(201).send(user);
+
+	bcrypt.hash(password, saltRounds, async (err, hash) => {
+		if (err) {
+			console.log(err);
+		}
+		const user = await createUser(username, hash, email, user_level);
+
+		res.status(201).send(user);
+	});
 });
 
 app.listen(8080, () => {

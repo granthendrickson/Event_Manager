@@ -17,7 +17,7 @@ export default function Register() {
 
 	const handleCreateUser = async () => {
 		try {
-			const response = await fetch('http://localhost:8080/Users', {
+			const response = await fetch('http://localhost:8080/Register', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
