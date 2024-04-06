@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import LoginOrRegister from './pages/LoginOrRegister';
 import Admin from './pages/Admin';
 import Student from './pages/Student';
+import SuperAdmin from './pages/SuperAdmin';
 
 function App() {
 	return (
@@ -25,6 +26,11 @@ function App() {
 						exact
 						path='pages/Student.jsx'
 						element={<Student />}
+					/>
+					<Route
+						exact
+						path='pages/SuperAdmin.jsx'
+						element={<SuperAdmin />}
 					/>
 				</Routes>
 			</div>

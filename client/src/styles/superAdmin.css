@@ -1,0 +1,58 @@
+.createUniversity {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f5f5f5; /* Light grey background */
+}
+
+.createUniversityForm {
+  width: 400px;
+  background-color: #ffffff; /* White background */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.inputField {
+  margin-bottom: 15px;
+}
+
+.inputField label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.inputField input,
+.inputField textarea,
+.inputField select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+.buttonContainer {
+  text-align: center;
+}
+
+.buttonContainer button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff; /* Blue button */
+  color: #ffffff; /* White text */
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.buttonContainer button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+
+.map {
+  width: 200px;
+  height: 200px;
+}

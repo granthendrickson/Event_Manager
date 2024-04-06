@@ -6,7 +6,7 @@ export default function Register() {
 		username: '',
 		email: '',
 		password: '',
-		user_level: 'Student', // Default value
+		user_level: 'student', // Default value
 	});
 
 	// Function to handle input changes
@@ -69,13 +69,13 @@ export default function Register() {
 				<div className='inputField'>
 					<label>User Level:</label>
 					<select
-						name='userLevel'
+						name='user_level'
 						value={user.user_level}
 						onChange={handleInputChange}
 					>
-						<option value='Student'>Student</option>
-						<option value='Admin'>Admin</option>
-						<option value='Super Admin'>Super Admin</option>
+						<option value='student'>Student</option>
+						<option value='admin'>Admin</option>
+						<option value='super admin'>Super Admin</option>
 					</select>
 				</div>
 				<div className='buttonContainer'>

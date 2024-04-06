@@ -26,6 +26,9 @@ export default function Login() {
 	const toStudentPage = (user) => {
 		navigate('../pages/Student.jsx', { state: user });
 	};
+	const toSuperAdminPage = (user) => {
+		navigate('../pages/SuperAdmin.jsx', { state: user });
+	};
 
 	const handleLogin = async () => {
 		try {
@@ -49,6 +52,9 @@ export default function Login() {
 			}
 			if (LoggedInUser.user_level === 'student') {
 				toStudentPage(LoggedInUser);
+			}
+			if (LoggedInUser.user_level === 'super admin') {
+				toSuperAdminPage(LoggedInUser);
 			}
 		} catch (error) {
 			console.error('Error logging in:', error);
