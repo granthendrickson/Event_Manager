@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
+// Components
+import EventTile from '../components/EventTile';
+
+// Styles
+import '../styles/student.css';
+
 export default function Student() {
 	const location = useLocation();
 	const user = location.state;
@@ -25,15 +31,20 @@ export default function Student() {
 		fetchEvents();
 	}, [user.user_id]);
 
+	console.log(events);
+
 	return (
 		<div className='student-page'>
 			<h1>{user.username}</h1>
 			<h2>Events:</h2>
-			<ul>
-				{events.map((event) => (
-					<li key={event.event_id}>{event.name}</li>
-				))}
-			</ul>
+			<div className='events-container'>
+				<ul>
+					{events.map((event) => (
+						// <li key={event.event_id}>{event.name}</li>
+						<EventTile />
+					))}
+				</ul>
+			</div>
 		</div>
 	);
 }

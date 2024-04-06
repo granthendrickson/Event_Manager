@@ -1,0 +1,40 @@
+.events-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.event_tile {
+  background-color: lightgray;
+  width: 700px;
+  display: flex;
+  margin: 20px;
+  padding: 10px;
+  border-radius: 10px;
+  text-align: left;
+}
+
+.event-tile-name-and-details {
+  margin: 10px;
+}
+
+.event-tile-name {
+  position: relative;
+  top: -20px;
+  left: 0px;
+}
+
+.event-tile-description-and-contact-info {
+  position: relative;
+  right: -40px;
+}
+
+.event-tile-contact-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.event-tile-email, .event-tile-phone {
+  margin: 20px;
+}
