@@ -129,35 +129,37 @@ export default function CreateEvent() {
 						<option value='rso'>RSO</option>
 					</select>
 				</div>
-				<div className='inputField'>
-					<label>Approval Status:</label>
-					<select
-						name='approval_status'
-						value={event.approval_status}
-						onChange={handleInputChange}
-					>
-						<option value='approved'>Approved</option>
-						<option value='pending'>Pending</option>
-					</select>
-				</div>
-				<div className='inputField'>
-					<label>RSO ID:</label>
-					<input
-						type='text'
-						name='rso_id'
-						value={event.rso_id}
-						onChange={handleInputChange}
-					/>
-				</div>
-				<div className='inputField'>
-					<label>University ID:</label>
-					<input
-						type='text'
-						name='university_id'
-						value={event.university_id}
-						onChange={handleInputChange}
-					/>
-				</div>
+				{event.visibility === 'rso'
+					? ((event.approval_status = 'approved'),
+					  (event.university_id = null),
+					  (
+							<div className='inputField'>
+								<label>RSO ID:</label>
+								<input
+									type='text'
+									name='rso_id'
+									value={event.rso_id}
+									onChange={handleInputChange}
+								/>
+							</div>
+					  ))
+					: null}
+
+				{event.visibility === 'private'
+					? ((event.approval_status = 'approved'),
+					  (event.rso_id = null),
+					  (
+							<div className='inputField'>
+								<label>University ID:</label>
+								<input
+									type='text'
+									name='university_id'
+									value={event.university_id}
+									onChange={handleInputChange}
+								/>
+							</div>
+					  ))
+					: null}
 				<div className='buttonContainer'>
 					<button onClick={handleCreateEvent}>Create Event</button>
 				</div>
