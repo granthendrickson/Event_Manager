@@ -61,17 +61,17 @@ app.get('/Users/:user_id', async (req, res) => {
 });
 
 app.post('/Register', async (req, res) => {
-	const { username, password, email, user_level } = req.body;
+	const { username, password, email, user_level, university_id } = req.body;
 
 	try {
 		const hash = await bcrypt.hash(password, saltRounds);
 
 		const [result] = await pool.query(
 			`
-                    INSERT INTO Users (username, password, email, user_level)
-                    VALUES (?,?,?,?)
+                    INSERT INTO Users (username, password, email, user_level, university_id)
+                    VALUES (?,?,?,?,?)
                     `,
-			[username, hash, email, user_level]
+			[username, hash, email, user_level, university_id]
 		);
 
 		const id = result.insertId;
@@ -201,6 +201,16 @@ async function getEvent(eventId) {
 	]);
 	return rows[0];
 }
+
+app.get('/Universities', async (req, res) => {
+	try {
+		const [universities] = await pool.query('SELECT * FROM Universities');
+		res.send(universities);
+	} catch (error) {
+		console.error('Error fetching universities:', error);
+		res.status(500).send({ error: 'Internal server error' });
+	}
+});
 
 app.post('/Universities', async (req, res) => {
 	const { name, location, description, number_of_students, pictures } =
