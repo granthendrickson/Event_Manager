@@ -124,6 +124,25 @@ app.post('/Login', async (req, res) => {
 	}
 });
 
+app.get('/GetUserIDByEmail/:email', async (req, res) => {
+	const email = req.params.email;
+
+	try {
+		const [result] = await pool.query(
+			'SELECT user_id FROM Users WHERE email = ?',
+			[email]
+		);
+		if (result.length > 0) {
+			res.send({ exists: true, user_id: result[0].user_id });
+		} else {
+			res.send({ exists: false, user_id: null });
+		}
+	} catch (error) {
+		console.error('Error fetching user ID by email:', error);
+		res.status(500).send({ error: 'Internal server error' });
+	}
+});
+
 app.post('/Events', async (req, res) => {
 	const {
 		name,
@@ -259,6 +278,53 @@ app.post('/RSOs', async (req, res) => {
 		res.status(201).send(newRSO);
 	} catch (error) {
 		console.error('Error creating RSO:', error);
+		res.status(500).send({ error: 'Internal server error' });
+	}
+});
+
+app.post('/UserRSOMemberships', async (req, res) => {
+	const { user_id, rso_id } = req.body;
+
+	try {
+		// Check if the user and RSO exist
+		const [userResult] = await pool.query(
+			'SELECT * FROM Users WHERE user_id = ?',
+			[user_id]
+		);
+		const [rsoResult] = await pool.query(
+			'SELECT * FROM RSOs WHERE rso_id = ?',
+			[rso_id]
+		);
+
+		if (userResult.length === 0) {
+			return res.status(404).send({ error: 'User not found' });
+		}
+
+		if (rsoResult.length === 0) {
+			return res.status(404).send({ error: 'RSO not found' });
+		}
+
+		// Check if the membership already exists
+		const [existingMembership] = await pool.query(
+			'SELECT * FROM UserRSOMemberships WHERE user_id = ? AND rso_id = ?',
+			[user_id, rso_id]
+		);
+
+		if (existingMembership.length > 0) {
+			return res.status(400).send({ error: 'Membership already exists' });
+		}
+
+		// Create the membership
+		await pool.query(
+			'INSERT INTO UserRSOMemberships (user_id, rso_id) VALUES (?, ?)',
+			[user_id, rso_id]
+		);
+
+		res.status(201).send({
+			message: 'UserRSOMembership created successfully',
+		});
+	} catch (error) {
+		console.error('Error creating UserRSOMembership:', error);
 		res.status(500).send({ error: 'Internal server error' });
 	}
 });

@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 
 // Components
 import EventTile from '../components/EventTile';
+import CreateRSO from '../components/CreateRSO';
 
 // Styles
 import '../styles/student.css';
@@ -41,10 +42,11 @@ export default function Student() {
 				<ul>
 					{events.map((event) => (
 						// <li key={event.event_id}>{event.name}</li>
-						<EventTile />
+						<EventTile key={event.event_id} />
 					))}
 				</ul>
 			</div>
+			<CreateRSO></CreateRSO>
 		</div>
 	);
 }
