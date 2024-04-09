@@ -299,6 +299,21 @@ app.post('/RSOs', async (req, res) => {
 	}
 });
 
+app.get('/RSOs/pending/:university_id', async (req, res) => {
+	const universityId = req.params.university_id;
+
+	try {
+		const [rsoList] = await pool.query(
+			`SELECT * FROM RSOs WHERE university_id = ? AND approval_status = 'pending'`,
+			[universityId]
+		);
+		res.send(rsoList);
+	} catch (error) {
+		console.error('Error fetching pending RSOs:', error);
+		res.status(500).send({ error: 'Internal server error' });
+	}
+});
+
 app.post('/UserRSOMemberships', async (req, res) => {
 	const { user_id, rso_id } = req.body;
 

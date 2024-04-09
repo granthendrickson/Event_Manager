@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
+// Components
+import PendingRSOs from './PendingRSOs';
+
 export default function University(props) {
 	const { university_id } = props;
 
@@ -34,6 +37,7 @@ export default function University(props) {
 					<p>Location: {university.location}</p>
 					<p>Description: {university.description}</p>
 					{/* Add more details as needed */}
+					<PendingRSOs university_id={university_id} />
 				</div>
 			)}
 		</div>
