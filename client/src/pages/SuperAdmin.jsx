@@ -2,7 +2,8 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 
 // Components
-import CreateUnivsersity from '../components/CreateUnivsersity';
+import CreateUniversity from '../components/CreateUniversity';
+import University from '../components/University';
 
 // Styles
 import '../styles/superAdmin.css';
@@ -16,7 +17,11 @@ export default function SuperAdmin() {
 	return (
 		<div>
 			<h1>Super Admin Dashboard</h1>
-			<CreateUnivsersity />
+			{user.university_id === null ? (
+				<CreateUniversity />
+			) : (
+				<University university_id={user.university_id} />
+			)}
 		</div>
 	);
 }

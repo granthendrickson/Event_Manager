@@ -231,6 +231,23 @@ app.get('/Universities', async (req, res) => {
 	}
 });
 
+app.get('/Universities/:university_id', async (req, res) => {
+	try {
+		const universityId = req.params.university_id;
+		const [university] = await pool.query(
+			'SELECT * FROM Universities WHERE university_id = ?',
+			[universityId]
+		);
+		if (university.length === 0) {
+			return res.status(404).send({ error: 'University not found' });
+		}
+		res.send(university[0]);
+	} catch (error) {
+		console.error('Error fetching university:', error);
+		res.status(500).send({ error: 'Internal server error' });
+	}
+});
+
 app.post('/Universities', async (req, res) => {
 	const { name, location, description, number_of_students, pictures } =
 		req.body;
