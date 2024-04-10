@@ -314,6 +314,25 @@ app.get('/RSOs/pending/:university_id', async (req, res) => {
 	}
 });
 
+app.post('/RSOs/approve/:rsoId', async (req, res) => {
+	const rsoId = req.params.rsoId;
+
+	try {
+		// Update the approval status of the RSO to "approved"
+		await pool.query(
+			`UPDATE RSOs
+					 SET approval_status = 'approved'
+					 WHERE rso_id = ?`,
+			[rsoId]
+		);
+
+		res.sendStatus(200);
+	} catch (error) {
+		console.error('Error approving RSO:', error);
+		res.status(500).send({ error: 'Internal server error' });
+	}
+});
+
 app.post('/UserRSOMemberships', async (req, res) => {
 	const { user_id, rso_id } = req.body;
 
