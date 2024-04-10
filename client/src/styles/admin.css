@@ -7,7 +7,7 @@
 }
 
 .createEventForm {
-  width: 400px;
+  width: 600px;
   background-color: #ffffff; /* White background */
   padding: 20px;
   border-radius: 8px;
@@ -52,7 +52,18 @@
   background-color: #0056b3; /* Darker blue on hover */
 }
 
-.map {
-  width: 200px;
-  height: 200px;
+.search {
+  position: relative;
+  top: 4rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 300px;
+  z-index: 10;
+}
+
+.search input {
+  padding: 0.5rem;
+  font-size: 1rem;
+  width: 100%;
 }
