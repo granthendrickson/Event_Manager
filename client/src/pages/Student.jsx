@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import moment from 'moment';
 
 // Components
 import EventTile from '../components/EventTile';
@@ -42,7 +43,17 @@ export default function Student() {
 				<ul>
 					{events.map((event) => (
 						// <li key={event.event_id}>{event.name}</li>
-						<EventTile key={event.event_id} />
+						<EventTile
+							key={event.event_id}
+							event_id={event.event_id}
+							name={event.name}
+							category={event.category}
+							date={moment(event.date).format('DD MMM, YYYY')}
+							time={moment(event.time, 'HH:mm').format('LT')}
+							contact_email={event.contact_email}
+							contact_phone={event.contact_phone}
+							description={event.description}
+						/>
 					))}
 				</ul>
 			</div>

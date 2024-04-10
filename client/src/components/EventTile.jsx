@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function EventTile(props) {
 	const {
@@ -15,15 +16,27 @@ export default function EventTile(props) {
 		university_id,
 	} = props;
 
+	const navigate = useNavigate();
+	const toEventPage = (event_id) => {
+		navigate('../pages/Event.jsx', { state: event_id });
+	};
+
+	const handleNavigationToEventPage = async () => {
+		toEventPage(event_id);
+	};
+
 	return (
-		<div className='event_tile'>
+		<div
+			className='event_tile'
+			onClick={handleNavigationToEventPage}
+		>
 			<div className='event-tile-name-and-details'>
-				<h1 className='event-tile-name'>Event Name</h1>
+				<h1 className='event-tile-name'>{name}</h1>
 
 				<h3>Details:</h3>
-				<div>Category: Social</div>
-				<div>Date: 4/9/24</div>
-				<div>Time: 12:30 PM</div>
+				<div>Category: {category}</div>
+				<div>Date: {date}</div>
+				<div>Time: {time}</div>
 				<div>Location: 123 Street st.</div>
 			</div>
 
@@ -31,14 +44,14 @@ export default function EventTile(props) {
 				<div className='event-tile-contact-info'>
 					<h3>Contact:</h3>
 					<div className='event-tile-email'>
-						Email: event@email.com
+						Email: {contact_email}
 					</div>
-					<div className='event-tile-phone'>Phone: 123 456 7890</div>
+					<div className='event-tile-phone'>
+						Phone: {contact_phone}
+					</div>
 				</div>
 
-				<div className='event-tile-description'>
-					This is the description for the event.
-				</div>
+				<div className='event-tile-description'>{description}</div>
 			</div>
 		</div>
 	);

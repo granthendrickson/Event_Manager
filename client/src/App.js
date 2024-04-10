@@ -6,6 +6,7 @@ import LoginOrRegister from './pages/LoginOrRegister';
 import Admin from './pages/Admin';
 import Student from './pages/Student';
 import SuperAdmin from './pages/SuperAdmin';
+import Event from './pages/Event';
 
 function App() {
 	return (
@@ -31,6 +32,11 @@ function App() {
 						exact
 						path='pages/SuperAdmin.jsx'
 						element={<SuperAdmin />}
+					/>
+					<Route
+						exact
+						path='pages/Event.jsx'
+						element={<Event />}
 					/>
 				</Routes>
 			</div>

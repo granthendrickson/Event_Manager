@@ -189,6 +189,21 @@ app.post('/Events', async (req, res) => {
 	}
 });
 
+app.get('/Events/:event_id', async (req, res) => {
+	const eventId = req.params.event_id;
+
+	try {
+		const event = await getEvent(eventId);
+		if (!event) {
+			return res.status(404).send({ error: 'Event not found' });
+		}
+		res.send(event);
+	} catch (error) {
+		console.error('Error fetching event:', error);
+		res.status(500).send({ error: 'Internal server error' });
+	}
+});
+
 app.get('/UserEvents/:user_id', async (req, res) => {
 	const user_id = req.params.user_id;
 
