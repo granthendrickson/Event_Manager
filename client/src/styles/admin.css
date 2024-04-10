@@ -54,16 +54,17 @@
 
 .search {
   position: relative;
+  display: flex;
   top: 4rem;
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
-  max-width: 300px;
+  max-width: 360px;
   z-index: 10;
 }
 
 .search input {
   padding: 0.5rem;
   font-size: 1rem;
-  width: 100%;
+  width: 300px;
 }

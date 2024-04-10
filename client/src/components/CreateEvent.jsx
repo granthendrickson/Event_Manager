@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { GoogleMap, useLoadScript, Marker } from '@react-google-maps/api';
 
 import usePlacesAutocomplete, {
@@ -29,7 +29,8 @@ const options = {
 	zoomControl: true,
 };
 
-export default function CreateEvent() {
+export default function CreateEvent(props) {
+	const { user } = props;
 	// Initialize state to store input values
 	const [event, setEvent] = useState({
 		name: '',
@@ -47,6 +48,8 @@ export default function CreateEvent() {
 	});
 
 	const [libraries] = useState(['places']);
+	const [createdLocation, setCreatedLocation] = useState(null);
+	const [rsoList, setRsoList] = useState([]);
 
 	const { isLoaded, loadError } = useLoadScript({
 		googleMapsApiKey: 'AIzaSyBH4Ka4wzj7gy4NmfRlANFQFO3gHMPmyYk',
@@ -61,12 +64,18 @@ export default function CreateEvent() {
 
 	const handleCreateEvent = async () => {
 		try {
+			const eventWithLocationAndUniversity = {
+				...event,
+				location_id: createdLocation.location_id,
+				university_id: user.university_id,
+			};
+
 			const response = await fetch('http://localhost:8080/Events', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify(event),
+				body: JSON.stringify(eventWithLocationAndUniversity),
 			});
 			if (!response.ok) {
 				throw new Error('Failed to create event');
@@ -87,6 +96,24 @@ export default function CreateEvent() {
 		mapRef.current.panTo({ lat, lng });
 		mapRef.current.setZoom(14);
 	}, []);
+
+	useEffect(() => {
+		const fetchRsoList = async () => {
+			try {
+				const response = await fetch(
+					`http://localhost:8080/RSOs/${user.user_id}`
+				);
+				if (!response.ok) {
+					throw new Error('Failed to fetch RSOs');
+				}
+				const data = await response.json();
+				setRsoList(data.rsoList);
+			} catch (error) {
+				console.error('Error fetching RSOs:', error);
+			}
+		};
+		fetchRsoList();
+	}, [user.user_id]);
 
 	return (
 		<div className='createEvent'>
@@ -137,15 +164,6 @@ export default function CreateEvent() {
 					/>
 				</div>
 				<div className='inputField'>
-					<label>Location ID:</label>
-					<input
-						type='text'
-						name='location_id'
-						value={event.location_id}
-						onChange={handleInputChange}
-					/>
-				</div>
-				<div className='inputField'>
 					<label>Contact Phone:</label>
 					<input
 						type='text'
@@ -177,34 +195,31 @@ export default function CreateEvent() {
 				</div>
 				{event.visibility === 'rso'
 					? ((event.approval_status = 'approved'),
-					  (event.university_id = null),
 					  (
 							<div className='inputField'>
 								<label>RSO ID:</label>
-								<input
-									type='text'
+								<select
 									name='rso_id'
 									value={event.rso_id}
 									onChange={handleInputChange}
-								/>
+								>
+									<option value=''>Select RSO</option>
+									{rsoList.map((rso) => (
+										<option
+											key={rso.rso_id}
+											value={rso.rso_id}
+										>
+											{rso.name}
+										</option>
+									))}
+								</select>
 							</div>
 					  ))
 					: null}
 
 				{event.visibility === 'private'
 					? ((event.approval_status = 'approved'),
-					  (event.rso_id = null),
-					  (
-							<div className='inputField'>
-								<label>University ID:</label>
-								<input
-									type='text'
-									name='university_id'
-									value={event.university_id}
-									onChange={handleInputChange}
-								/>
-							</div>
-					  ))
+					  (event.rso_id = null))
 					: null}
 				{loadError ? (
 					<div>Error loading maps</div>
@@ -212,7 +227,10 @@ export default function CreateEvent() {
 					<div>Loading maps</div>
 				) : (
 					<div>
-						<Search panTo={panTo} />
+						<Search
+							panTo={panTo}
+							setCreatedLocation={setCreatedLocation}
+						/>
 						<GoogleMap
 							mapContainerStyle={mapContainerStyle}
 							zoom={15}
@@ -222,6 +240,9 @@ export default function CreateEvent() {
 						>
 							<Marker position={center} />
 						</GoogleMap>
+						{createdLocation && (
+							<div>Location: {createdLocation.name}</div>
+						)}
 					</div>
 				)}
 				<div className='buttonContainer'>
@@ -232,7 +253,7 @@ export default function CreateEvent() {
 	);
 }
 
-function Search({ panTo }) {
+function Search({ panTo, setCreatedLocation }) {
 	const {
 		ready,
 		value,
@@ -246,10 +267,39 @@ function Search({ panTo }) {
 		},
 	});
 
-	// https://developers.google.com/maps/documentation/javascript/reference/places-autocomplete-service#AutocompletionRequest
+	const [location, setLocation] = useState({
+		name: '',
+		latitude: '',
+		longitude: '',
+	});
 
 	const handleInput = (e) => {
 		setValue(e.target.value);
+	};
+
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+
+		try {
+			// Create location on server
+			const response = await fetch('http://localhost:8080/Locations', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(location),
+			});
+
+			if (!response.ok) {
+				throw new Error('Failed to create location');
+			}
+
+			const newLocation = await response.json();
+			console.log('New location created:', newLocation);
+			setCreatedLocation(newLocation); // Update created location in CreateEvent component
+		} catch (error) {
+			console.error('Error creating location:', error);
+		}
 	};
 
 	const handleSelect = async (address) => {
@@ -260,7 +310,7 @@ function Search({ panTo }) {
 			const results = await getGeocode({ address });
 			const { lat, lng } = await getLatLng(results[0]);
 			panTo({ lat, lng });
-			console.log({ lat, lng });
+			setLocation({ name: address, latitude: lat, longitude: lng });
 		} catch (error) {
 			console.log('😱 Error: ', error);
 		}
@@ -278,15 +328,16 @@ function Search({ panTo }) {
 				<ComboboxPopover>
 					<ComboboxList>
 						{status === 'OK' &&
-							data.map(({ id, description }) => (
+							data.map(({ description }, index) => (
 								<ComboboxOption
-									key={id}
+									key={index}
 									value={description}
 								/>
 							))}
 					</ComboboxList>
 				</ComboboxPopover>
 			</Combobox>
+			<button onClick={handleSubmit}>Set Location</button>
 		</div>
 	);
 }

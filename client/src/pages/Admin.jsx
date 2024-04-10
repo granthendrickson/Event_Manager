@@ -16,7 +16,7 @@ export default function Admin() {
 	return (
 		<div className='admin-page'>
 			<h1>{user.username}</h1>
-			<CreateEvent />
+			<CreateEvent user={user} />
 		</div>
 	);
 }

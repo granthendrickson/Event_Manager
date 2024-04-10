@@ -314,6 +314,31 @@ app.post('/RSOs', async (req, res) => {
 	}
 });
 
+app.get('/RSOs/:userId', async (req, res) => {
+	const { userId } = req.params;
+
+	try {
+		// Query the database to retrieve RSOs with admin_id equal to userId
+		const [rsoRows] = await pool.query(
+			'SELECT * FROM RSOs WHERE admin_id = ?',
+			[userId]
+		);
+
+		// Check if any RSOs were found
+		if (rsoRows.length === 0) {
+			return res
+				.status(404)
+				.json({ message: 'No RSOs found for the provided user ID' });
+		}
+
+		// Send the RSOs as a response
+		res.status(200).json({ rsoList: rsoRows });
+	} catch (error) {
+		console.error('Error retrieving RSOs:', error);
+		res.status(500).json({ error: 'Internal server error' });
+	}
+});
+
 app.get('/RSOs/pending/:university_id', async (req, res) => {
 	const universityId = req.params.university_id;
 
@@ -399,6 +424,19 @@ app.post('/Locations', async (req, res) => {
 	const { name, latitude, longitude } = req.body;
 
 	try {
+		// Check if the location already exists
+		const [existingLocation] = await pool.query(
+			'SELECT * FROM Locations WHERE name = ?',
+			[name]
+		);
+
+		if (existingLocation.length > 0) {
+			// If the location already exists, return it
+			res.status(200).send(existingLocation[0]);
+			return;
+		}
+
+		// If the location doesn't exist, insert it into the database
 		const [result] = await pool.query(
 			`INSERT INTO Locations (name, latitude, longitude)
 							VALUES (?, ?, ?)`,
@@ -410,7 +448,7 @@ app.post('/Locations', async (req, res) => {
 		const newLocation = await getLocation(locationId);
 		res.status(201).send(newLocation);
 	} catch (error) {
-		console.error('Error creating location:', error);
+		console.error('Error creating or fetching location:', error);
 		res.status(500).send({ error: 'Internal server error' });
 	}
 });
