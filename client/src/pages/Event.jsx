@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import moment from 'moment';
 
 export default function Event() {
 	const location = useLocation();
@@ -34,7 +35,10 @@ export default function Event() {
 					<h2>{event.name}</h2>
 					<p>Category: {event.category}</p>
 					<p>Description: {event.description}</p>
-					{/* Add more event details here */}
+					<p>Date: {moment(event.date).format('DD MMM, YYYY')}</p>
+					<p>Time: {moment(event.time, 'HH:mm').format('LT')}</p>
+					<p>Email: {event.contact_email}</p>
+					<p>Phone: {event.contact_phone}</p>
 				</div>
 			) : (
 				<p>Loading event...</p>
