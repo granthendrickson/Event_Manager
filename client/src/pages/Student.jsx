@@ -53,6 +53,7 @@ export default function Student() {
 							contact_email={event.contact_email}
 							contact_phone={event.contact_phone}
 							description={event.description}
+							user={user}
 						/>
 					))}
 				</ul>

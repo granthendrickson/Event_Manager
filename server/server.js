@@ -415,6 +415,59 @@ app.post('/Locations', async (req, res) => {
 	}
 });
 
+app.post('/Comments', async (req, res) => {
+	const { event_id, user_id, comment_text } = req.body;
+
+	// Check if all required fields are present
+	if (!event_id || !user_id || !comment_text) {
+		return res.status(400).send({
+			error: 'All fields (event_id, user_id, comment_text) are required',
+		});
+	}
+
+	try {
+		// Insert the new comment into the database
+		const [result] = await pool.query(
+			`INSERT INTO Comments (event_id, user_id, comment_text, timestamp) VALUES (?, ?, ?, NOW())`,
+			[event_id, user_id, comment_text]
+		);
+
+		const commentId = result.insertId;
+
+		// Retrieve the newly created comment
+		const newComment = await getComment(commentId);
+
+		// Send the newly created comment as the response
+		res.status(201).send(newComment);
+	} catch (error) {
+		console.error('Error creating comment:', error);
+		res.status(500).send({ error: 'Internal server error' });
+	}
+});
+
+app.get('/Comments/:event_id', async (req, res) => {
+	const eventId = req.params.event_id;
+
+	try {
+		const [comments] = await pool.query(
+			`SELECT * FROM Comments WHERE event_id = ?`,
+			[eventId]
+		);
+		res.send(comments);
+	} catch (error) {
+		console.error('Error fetching comments:', error);
+		res.status(500).send({ error: 'Internal server error' });
+	}
+});
+
+async function getComment(commentId) {
+	const [rows] = await pool.query(
+		`SELECT * FROM Comments WHERE comment_id = ?`,
+		[commentId]
+	);
+	return rows[0];
+}
+
 async function getLocation(id) {
 	const [rows] = await pool.query(
 		`SELECT *

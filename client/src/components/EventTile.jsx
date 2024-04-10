@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function EventTile(props) {
@@ -14,16 +14,24 @@ export default function EventTile(props) {
 		description,
 		rso_id,
 		university_id,
+		user,
 	} = props;
 
+	const [userAndEvent, setUserAndEvent] = useState(null);
+
 	const navigate = useNavigate();
-	const toEventPage = (event_id) => {
-		navigate('../pages/Event.jsx', { state: event_id });
+	const toEventPage = (userAndEvent) => {
+		navigate('../pages/Event.jsx', { state: userAndEvent });
 	};
 
 	const handleNavigationToEventPage = async () => {
-		toEventPage(event_id);
+		toEventPage(userAndEvent);
 	};
+
+	useEffect(() => {
+		const temp = { user, event_id };
+		setUserAndEvent(temp);
+	}, [user, event_id]);
 
 	return (
 		<div
