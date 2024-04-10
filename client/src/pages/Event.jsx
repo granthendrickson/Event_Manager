@@ -9,6 +9,8 @@ export default function Event() {
 	const [comments, setComments] = useState([]);
 	const [usernames, setUsernames] = useState({});
 	const [newCommentText, setNewCommentText] = useState('');
+	const [editingCommentId, setEditingCommentId] = useState(null);
+	const [editCommentText, setEditCommentText] = useState('');
 
 	const fetchComments = async () => {
 		try {
@@ -97,6 +99,50 @@ export default function Event() {
 		}
 	};
 
+	const handleEditComment = (commentId, commentText) => {
+		setEditingCommentId(commentId);
+		setEditCommentText(commentText);
+	};
+
+	const handleCancelEditComment = () => {
+		setEditingCommentId(null);
+		setEditCommentText('');
+	};
+
+	const handleSaveEdit = async (commentId, updatedCommentText) => {
+		try {
+			const response = await fetch(
+				`http://localhost:8080/Comments/${commentId}`,
+				{
+					method: 'PUT',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						comment_text: updatedCommentText,
+					}),
+				}
+			);
+
+			if (!response.ok) {
+				throw new Error('Failed to update comment');
+			}
+
+			// Update the comments state with the updated comment text
+			const updatedComments = comments.map((comment) =>
+				comment.comment_id === commentId
+					? { ...comment, comment_text: updatedCommentText }
+					: comment
+			);
+			setComments(updatedComments);
+
+			// Reset the editingCommentId state
+			setEditingCommentId(null);
+		} catch (error) {
+			console.error('Error updating comment:', error);
+		}
+	};
+
 	return (
 		<div>
 			{event ? (
@@ -128,17 +174,69 @@ export default function Event() {
 							<ul>
 								{comments.map((comment) => (
 									<div key={comment.comment_id}>
-										<p>{comment.comment_text}</p>
-										<p>
-											{moment(comment.timestamp).format(
-												'DD MMM, LT'
-											)}
-										</p>
-										<p>
-											User:{' '}
-											{usernames[comment.user_id] ||
-												'Unknown User'}
-										</p>
+										{/* Render comment text or editable textarea */}
+										{editingCommentId ===
+										comment.comment_id ? (
+											<div>
+												<textarea
+													name='edit-comment-text'
+													cols='30'
+													rows='10'
+													value={editCommentText}
+													onChange={(e) =>
+														setEditCommentText(
+															e.target.value
+														)
+													}
+												/>
+												<button
+													onClick={() =>
+														handleSaveEdit(
+															comment.comment_id,
+															editCommentText
+														)
+													}
+												>
+													Save
+												</button>
+												<button
+													onClick={
+														handleCancelEditComment
+													}
+												>
+													Cancel
+												</button>
+											</div>
+										) : (
+											<div>
+												<p>{comment.comment_text}</p>
+												<p>
+													{moment(
+														comment.timestamp
+													).format('DD MMM, LT')}
+												</p>
+												<p>
+													User:{' '}
+													{usernames[
+														comment.user_id
+													] || 'Unknown User'}
+												</p>
+												{comment.user_id ===
+													userAndEvent.user
+														.user_id && (
+													<button
+														onClick={() =>
+															handleEditComment(
+																comment.comment_id,
+																comment.comment_text
+															)
+														}
+													>
+														Edit Comment
+													</button>
+												)}
+											</div>
+										)}
 									</div>
 								))}
 							</ul>

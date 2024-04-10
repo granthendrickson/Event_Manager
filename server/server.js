@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(
 	cors({
 		origin: 'http://localhost:3000', // Allow requests from the origin where your React app is hosted
-		methods: ['GET', 'POST'], // Allow only specified methods
+		methods: ['GET', 'POST', 'PUT'], // Allow only specified methods
 		credentials: true,
 		allowedHeaders: ['Content-Type', 'Authorization'], // Allow only specified headers
 	})
@@ -441,6 +441,30 @@ app.post('/Comments', async (req, res) => {
 		res.status(201).send(newComment);
 	} catch (error) {
 		console.error('Error creating comment:', error);
+		res.status(500).send({ error: 'Internal server error' });
+	}
+});
+
+app.put('/Comments/:comment_id', async (req, res) => {
+	const commentId = req.params.comment_id;
+	const { comment_text } = req.body;
+
+	try {
+		// Update the comment text in the database
+		await pool.query(
+			`UPDATE Comments
+					 SET comment_text = ?
+					 WHERE comment_id = ?`,
+			[comment_text, commentId]
+		);
+
+		// Retrieve the updated comment
+		const updatedComment = await getComment(commentId);
+
+		// Send the updated comment as the response
+		res.send(updatedComment);
+	} catch (error) {
+		console.error('Error updating comment:', error);
 		res.status(500).send({ error: 'Internal server error' });
 	}
 });
