@@ -320,6 +320,31 @@ app.get('/RSOs/:userId', async (req, res) => {
 	try {
 		// Query the database to retrieve RSOs with admin_id equal to userId
 		const [rsoRows] = await pool.query(
+			'SELECT DISTINCT RSOs.* FROM RSOs LEFT JOIN UserRSOMemberships ON RSOs.rso_id = UserRSOMemberships.rso_id WHERE RSOs.admin_id = ? OR UserRSOMemberships.user_id = ?',
+			[userId, userId]
+		);
+
+		// Check if any RSOs were found
+		if (rsoRows.length === 0) {
+			return res
+				.status(404)
+				.json({ message: 'No RSOs found for the provided user ID' });
+		}
+
+		// Send the RSOs as a response
+		res.status(200).json({ rsoList: rsoRows });
+	} catch (error) {
+		console.error('Error retrieving RSOs:', error);
+		res.status(500).json({ error: 'Internal server error' });
+	}
+});
+
+app.get('/RSOs/admin/:userId', async (req, res) => {
+	const { userId } = req.params;
+
+	try {
+		// Query the database to retrieve RSOs with admin_id equal to userId
+		const [rsoRows] = await pool.query(
 			'SELECT * FROM RSOs WHERE admin_id = ?',
 			[userId]
 		);

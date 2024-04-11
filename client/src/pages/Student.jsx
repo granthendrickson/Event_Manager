@@ -92,6 +92,7 @@ export default function Student() {
 								onClick={() => toRSOPage(user, rso)}
 								key={rso.rso_id}
 							>
+								{user.user_id === rso.admin_id && <p>admin</p>}
 								{rso.name}
 							</div>
 						))}
