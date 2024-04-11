@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(
 	cors({
 		origin: 'http://localhost:3000', // Allow requests from the origin where your React app is hosted
-		methods: ['GET', 'POST', 'PUT'], // Allow only specified methods
+		methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow only specified methods
 		credentials: true,
 		allowedHeaders: ['Content-Type', 'Authorization'], // Allow only specified headers
 	})
@@ -320,7 +320,7 @@ app.get('/RSOs/:userId', async (req, res) => {
 	try {
 		// Query the database to retrieve RSOs with admin_id equal to userId
 		const [rsoRows] = await pool.query(
-			'SELECT DISTINCT RSOs.* FROM RSOs LEFT JOIN UserRSOMemberships ON RSOs.rso_id = UserRSOMemberships.rso_id WHERE RSOs.admin_id = ? OR UserRSOMemberships.user_id = ?',
+			'SELECT DISTINCT RSOs.* FROM RSOs LEFT JOIN UserRSOMemberships ON RSOs.rso_id = UserRSOMemberships.rso_id WHERE (RSOs.admin_id = ? OR UserRSOMemberships.user_id = ?) AND RSOs.approval_status = "approved"',
 			[userId, userId]
 		);
 
@@ -441,6 +441,48 @@ app.post('/UserRSOMemberships', async (req, res) => {
 		});
 	} catch (error) {
 		console.error('Error creating UserRSOMembership:', error);
+		res.status(500).send({ error: 'Internal server error' });
+	}
+});
+
+app.post('/UserRSOMemberships/check', async (req, res) => {
+	const { user_id, rso_id } = req.body;
+
+	try {
+		// Check if the UserRSOMembership exists
+		const [membership] = await pool.query(
+			'SELECT * FROM UserRSOMemberships WHERE user_id = ? AND rso_id = ?',
+			[user_id, rso_id]
+		);
+
+		if (membership.length > 0) {
+			// UserRSOMembership exists
+			res.status(200).send({ exists: true });
+		} else {
+			// UserRSOMembership does not exist
+			res.status(200).send({ exists: false });
+		}
+	} catch (error) {
+		console.error('Error checking UserRSOMembership:', error);
+		res.status(500).send({ error: 'Internal server error' });
+	}
+});
+
+app.delete('/UserRSOMemberships/:user_id/:rso_id', async (req, res) => {
+	const { user_id, rso_id } = req.params;
+
+	try {
+		// Delete the UserRSOMembership
+		await pool.query(
+			'DELETE FROM UserRSOMemberships WHERE user_id = ? AND rso_id = ?',
+			[user_id, rso_id]
+		);
+
+		res.status(200).send({
+			message: 'UserRSOMembership deleted successfully',
+		});
+	} catch (error) {
+		console.error('Error deleting UserRSOMembership:', error);
 		res.status(500).send({ error: 'Internal server error' });
 	}
 });

@@ -8,12 +8,14 @@ import CreateRSO from '../components/CreateRSO';
 
 // Styles
 import '../styles/student.css';
+import CreateEvent from '../components/CreateEvent';
 
 export default function Student() {
 	const location = useLocation();
 	const user = location.state;
 	const [events, setEvents] = useState([]);
 	const [rsoList, setRsoList] = useState([]);
+	const [showCreateEventForm, setShowCreateEventForm] = useState(false);
 
 	const navigate = useNavigate();
 	const toRSOPage = (user, RSO) => {
@@ -58,7 +60,9 @@ export default function Student() {
 		fetchRsoList();
 	}, [user.user_id]);
 
-	console.log(events);
+	const toggleCreateEventForm = () => {
+		setShowCreateEventForm((prevState) => !prevState);
+	};
 
 	return (
 		<div className='student-page'>
@@ -83,23 +87,26 @@ export default function Student() {
 					))}
 				</ul>
 			</div>
-			{user.user_level === 'admin' && (
-				<div className='rso-container'>
-					<h2>Your RSOs:</h2>
-					<ul>
-						{rsoList.map((rso) => (
-							<div
-								onClick={() => toRSOPage(user, rso)}
-								key={rso.rso_id}
-							>
-								{user.user_id === rso.admin_id && <p>admin</p>}
-								{rso.name}
-							</div>
-						))}
-					</ul>
-				</div>
-			)}
+
+			<div className='rso-container'>
+				<h2>Your RSOs:</h2>
+				<ul>
+					{rsoList.map((rso) => (
+						<div
+							onClick={() => toRSOPage(user, rso)}
+							key={rso.rso_id}
+						>
+							{user.user_id === rso.admin_id && <p>admin</p>}
+							{rso.name}
+						</div>
+					))}
+				</ul>
+			</div>
 			<CreateRSO></CreateRSO>
+			{user.user_level === 'admin' && (
+				<button onClick={toggleCreateEventForm}>Create Event</button>
+			)}
+			<div>{showCreateEventForm && <CreateEvent user={user} />}</div>
 		</div>
 	);
 }
