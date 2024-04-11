@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import moment from 'moment';
 
 // Components
@@ -13,6 +13,12 @@ export default function Student() {
 	const location = useLocation();
 	const user = location.state;
 	const [events, setEvents] = useState([]);
+	const [rsoList, setRsoList] = useState([]);
+
+	const navigate = useNavigate();
+	const toRSOPage = (user, RSO) => {
+		navigate('../pages/RSO.jsx', { state: { user, RSO } });
+	};
 
 	useEffect(() => {
 		const fetchEvents = async () => {
@@ -31,6 +37,25 @@ export default function Student() {
 		};
 
 		fetchEvents();
+	}, [user.user_id]);
+
+	useEffect(() => {
+		const fetchRsoList = async () => {
+			try {
+				const response = await fetch(
+					`http://localhost:8080/RSOs/${user.user_id}`
+				);
+				if (!response.ok) {
+					throw new Error('Failed to fetch RSOs');
+				}
+				const data = await response.json();
+				setRsoList(data.rsoList);
+			} catch (error) {
+				console.error('Error fetching RSOs:', error);
+			}
+		};
+
+		fetchRsoList();
 	}, [user.user_id]);
 
 	console.log(events);
@@ -58,6 +83,21 @@ export default function Student() {
 					))}
 				</ul>
 			</div>
+			{user.user_level === 'admin' && (
+				<div className='rso-container'>
+					<h2>Your RSOs:</h2>
+					<ul>
+						{rsoList.map((rso) => (
+							<div
+								onClick={() => toRSOPage(user, rso)}
+								key={rso.rso_id}
+							>
+								{rso.name}
+							</div>
+						))}
+					</ul>
+				</div>
+			)}
 			<CreateRSO></CreateRSO>
 		</div>
 	);

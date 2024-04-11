@@ -7,7 +7,7 @@ import Admin from './pages/Admin';
 import Student from './pages/Student';
 import SuperAdmin from './pages/SuperAdmin';
 import Event from './pages/Event';
-
+import RSO from './pages/RSO';
 function App() {
 	return (
 		<Router>
@@ -37,6 +37,11 @@ function App() {
 						exact
 						path='pages/Event.jsx'
 						element={<Event />}
+					/>
+					<Route
+						exact
+						path='pages/RSO.jsx'
+						element={<RSO />}
 					/>
 				</Routes>
 			</div>

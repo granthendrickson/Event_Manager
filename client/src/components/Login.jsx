@@ -20,9 +20,6 @@ export default function Login() {
 	};
 
 	const navigate = useNavigate();
-	const toAdminPage = (user) => {
-		navigate('../pages/Admin.jsx', { state: user });
-	};
 	const toStudentPage = (user) => {
 		navigate('../pages/Student.jsx', { state: user });
 	};
@@ -47,14 +44,10 @@ export default function Login() {
 			const LoggedInUser = response.data[0];
 			setLoginStatus(LoggedInUser.username);
 			console.log('Logged in as:', LoggedInUser);
-			if (LoggedInUser.user_level === 'admin') {
-				toAdminPage(LoggedInUser);
-			}
-			if (LoggedInUser.user_level === 'student') {
-				toStudentPage(LoggedInUser);
-			}
 			if (LoggedInUser.user_level === 'super admin') {
 				toSuperAdminPage(LoggedInUser);
+			} else {
+				toStudentPage(LoggedInUser);
 			}
 		} catch (error) {
 			console.error('Error logging in:', error);
