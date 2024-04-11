@@ -116,26 +116,32 @@ export default function CreateEvent(props) {
 	}, [user.user_id]);
 
 	return (
-		<div className='createEvent'>
+		<div className='create-event'>
 			<div className='createEventForm'>
-				<h1>Create Event</h1>
-				<div className='inputField'>
-					<label>Name:</label>
-					<input
-						type='text'
-						name='name'
-						value={event.name}
-						onChange={handleInputChange}
-					/>
-				</div>
-				<div className='inputField'>
-					<label>Category:</label>
-					<input
-						type='text'
-						name='category'
-						value={event.category}
-						onChange={handleInputChange}
-					/>
+				<h1>Create Event:</h1>
+				<div className='create-event-name-and-category'>
+					<div className='inputField'>
+						<label>Event Name</label>
+						<input
+							id='event-name-input'
+							type='text'
+							name='name'
+							value={event.name}
+							onChange={handleInputChange}
+						/>
+					</div>
+					<div className='inputField'>
+						<label>
+							Event Category (Social, Fundraising, etc.)
+						</label>
+						<input
+							id='event-category-input'
+							type='text'
+							name='category'
+							value={event.category}
+							onChange={handleInputChange}
+						/>
+					</div>
 				</div>
 				<div className='inputField'>
 					<label>Description:</label>
@@ -145,42 +151,51 @@ export default function CreateEvent(props) {
 						onChange={handleInputChange}
 					></textarea>
 				</div>
-				<div className='inputField'>
-					<label>Time:</label>
-					<input
-						type='time' // Use type 'time' for time picker
-						name='time'
-						value={event.time}
-						onChange={handleInputChange}
-					/>
+				<div className='create-event-date-and-time'>
+					<div className='inputField'>
+						<label>Date:</label>
+						<input
+							id='event-date-input'
+							type='date' // Use type 'date' for date picker
+							name='date'
+							value={event.date}
+							onChange={handleInputChange}
+						/>
+					</div>
+					<div className='inputField'>
+						<label>Time:</label>
+						<input
+							id='event-time-input'
+							type='time' // Use type 'time' for time picker
+							name='time'
+							value={event.time}
+							onChange={handleInputChange}
+						/>
+					</div>
 				</div>
-				<div className='inputField'>
-					<label>Date:</label>
-					<input
-						type='date' // Use type 'date' for date picker
-						name='date'
-						value={event.date}
-						onChange={handleInputChange}
-					/>
+				<div className='create-event-phone-and-email'>
+					<div className='inputField'>
+						<label>Contact Phone:</label>
+						<input
+							id='event-phone-input'
+							type='text'
+							name='contact_phone'
+							value={event.contact_phone}
+							onChange={handleInputChange}
+						/>
+					</div>
+					<div className='inputField'>
+						<label>Contact Email:</label>
+						<input
+							id='event-email-input'
+							type='text'
+							name='contact_email'
+							value={event.contact_email}
+							onChange={handleInputChange}
+						/>
+					</div>
 				</div>
-				<div className='inputField'>
-					<label>Contact Phone:</label>
-					<input
-						type='text'
-						name='contact_phone'
-						value={event.contact_phone}
-						onChange={handleInputChange}
-					/>
-				</div>
-				<div className='inputField'>
-					<label>Contact Email:</label>
-					<input
-						type='text'
-						name='contact_email'
-						value={event.contact_email}
-						onChange={handleInputChange}
-					/>
-				</div>
+
 				<div className='inputField'>
 					<label>Visibility:</label>
 					<select
@@ -240,13 +255,20 @@ export default function CreateEvent(props) {
 						>
 							<Marker position={center} />
 						</GoogleMap>
-						{createdLocation && (
-							<div>Location: {createdLocation.name}</div>
-						)}
+
+						<div className='selected-location'>
+							{createdLocation && createdLocation.name}
+						</div>
 					</div>
 				)}
+
 				<div className='buttonContainer'>
-					<button onClick={handleCreateEvent}>Create Event</button>
+					<button
+						id='create-event-button'
+						onClick={handleCreateEvent}
+					>
+						Create Event
+					</button>
 				</div>
 			</div>
 		</div>
@@ -318,7 +340,10 @@ function Search({ panTo, setCreatedLocation }) {
 
 	return (
 		<div className='search'>
-			<Combobox onSelect={handleSelect}>
+			<Combobox
+				className='search-bar'
+				onSelect={handleSelect}
+			>
 				<ComboboxInput
 					value={value}
 					onChange={handleInput}

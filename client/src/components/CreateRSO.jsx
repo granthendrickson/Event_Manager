@@ -163,7 +163,7 @@ export default function CreateRSO() {
 	return (
 		<div className='create-rso'>
 			<div className='create-rso-form'>
-				<h1>Create an RSO</h1>
+				<h1>Request to Create RSO:</h1>
 				<div className='inputField'>
 					<label>Name:</label>
 					<input
@@ -172,23 +172,6 @@ export default function CreateRSO() {
 						value={RSO.name}
 						onChange={handleInputChange}
 					/>
-				</div>
-				<div className='inputField'>
-					<label>Universities:</label>
-					<select
-						name='university_id'
-						value={RSO.university_id}
-						onChange={handleInputChange}
-					>
-						{universities.map((uni) => (
-							<option
-								key={uni.university_id}
-								value={uni.university_id}
-							>
-								{uni.name}
-							</option>
-						))}
-					</select>
 				</div>
 				<div className='inputField'>
 					<label>Admin Email:</label>
@@ -227,7 +210,12 @@ export default function CreateRSO() {
 					/>
 				</div>
 				<div className='buttonContainer'>
-					<button onClick={handleCreateRSO}>Create RSO</button>
+					<button
+						id='create-rso-button'
+						onClick={handleCreateRSO}
+					>
+						Create RSO
+					</button>
 				</div>
 			</div>
 		</div>

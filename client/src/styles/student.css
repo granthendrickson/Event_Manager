@@ -1,40 +1,241 @@
-.events-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.student-page {
+  margin: 80px 140px;
 }
 
-.event_tile {
-  background-color: lightgray;
-  width: 700px;
+.student-page-header {
   display: flex;
-  margin: 20px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.student-page-header-button {
+  background-color: #D9D9D9;
+  border: none;
+  outline: none;
+  height: 50px;
+  border-radius: 5px;
+  margin-left: 30px;
   padding: 10px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+#rso-button {
+  width: 100px;
+}
+
+.student-page-body {
+  display: flex;
+}
+
+.events-container {
+  text-align: left;
+}
+
+.events-list {
+  display: flex;
+}
+
+ul {
+  padding: 0px;
+}
+
+.event-tile {
+  background-color: white;
+  box-shadow: hsla(0, 0%, 0%, 0.25) 4px 4px 6px; 
+  width: 500px;
+  height: 200px;
+  margin: 20px 0px;
+  padding: 18px;
   border-radius: 10px;
   text-align: left;
 }
 
-.event-tile-name-and-details {
-  margin: 10px;
+.event-tile-name-and-category {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
 }
 
-.event-tile-name {
-  position: relative;
-  top: -20px;
-  left: 0px;
+.event-tile h1 {
+  font-size: 20px;
+  margin: 0px;
 }
 
-.event-tile-description-and-contact-info {
+.event-tile-category {
+  background-color: #D9D9D9;
   position: relative;
-  right: -40px;
+  width: 80px;
+  height: 24px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+}
+
+.event-tile-date-and-time {
+  color: #888888;
+  margin-top: 6px;
+  font-size: 12px;
+}
+
+.event-tile-location-container {
+  font-weight: 500;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+}
+
+.event-tile img {
+  width: 16px;
+  height: 16px;
+  margin-right: 5px;
 }
 
 .event-tile-contact-info {
+  display: flex;
+  margin-top: 6px;
+}
+
+.event-tile-phone-container {
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+  font-weight: 500;
+}
+
+.event-tile-email-container {
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+}
+
+.event-tile-description {
+  margin-top: 10px;
+  font-size: 12px;
+}
+
+.rso-container {
+  margin-left: 60px;
+  text-align: left;
+}
+
+#rso-header{
+  margin-bottom: 54px;
+}
+
+.rso-tile {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 300px;
+  height: 100px;
+  box-shadow: hsla(0, 0%, 0%, 0.25) 4px 4px 6px; 
+  border-radius: 10px;
+}
+
+.rso-tile-name {
+  margin-left: 18px;
+  font-size: 20px;
+}
+
+.rso-membership-status {
+  margin-right: 18px;
+  color: #888888;
+}
+
+.create-event {
+  background-color: #F5F5F5;
+  box-shadow: hsla(0, 0%, 0%, 0.25) 4px 4px 6px; 
+  width: 645px;
+  border-radius: 10px;
+  margin-left: 90px;
+  padding: 30px;
+  text-align: left;
+}
+
+.create-event-name-and-category {
+  display: flex;
+  justify-content: space-between;
+}
+
+#event-name-input {
+  width: 260px;
+}
+
+#event-category-input {
+  width: 320px;
+}
+
+textarea {
+  height: 100px;
+}
+
+.create-event-date-and-time {
+  display: flex;
+  justify-content: space-between;
+}
+
+#event-date-input, #event-time-input, #event-email-input, #event-phone-input{
+  width: 300px;
+}
+
+.create-event-phone-and-email {
+  display: flex;
+  justify-content: space-between;
+}
+
+.search {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  z-index: 10;
+}
+
+.search-bar {
+  width: 400px;
+}
+
+.search input {
+  padding: 0.5rem;
+  font-size: 14px;
+  width: 100%;
+}
+
+.selected-location {
+  height: 100px;
+  font-size: 20px;
+  font-weight: bold;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.event-tile-email, .event-tile-phone {
-  margin: 20px;
+#create-event-button {
+  background-color: #4C9EFF;
+  width: 140px;
+  height: 50px;
+  margin-right: 18px;
+}
+
+.create-rso {
+  background-color: #F5F5F5;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: hsla(0, 0%, 0%, 0.25) 4px 4px 6px; 
+  text-align: left;
+  margin-left: 300px;
+  margin-top: 100px;
+}
+
+#create-rso-button {
+  background-color: #4C9EFF;
+  width: 140px;
+  height: 50px;
+  margin-right: 18px;
 }
