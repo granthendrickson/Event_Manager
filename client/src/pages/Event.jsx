@@ -2,6 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import moment from 'moment';
 
+// Styles
+import '../styles/student.css';
+
+// Icons
+import locationPing from '../img/locationPing.png';
+import phoneIcon from '../img/phoneIcon.png';
+import mailIcon from '../img/mailIcon.png';
+
 export default function Event() {
 	const location = useLocation();
 	const userAndEvent = location.state;
@@ -144,19 +152,59 @@ export default function Event() {
 	};
 
 	return (
-		<div>
+		<div className='event-page'>
 			{event ? (
-				<div>
-					<h2>{event.name}</h2>
-					<p>Category: {event.category}</p>
-					<p>Description: {event.description}</p>
-					<p>Date: {moment(event.date).format('DD MMM, YYYY')}</p>
-					<p>Time: {moment(event.time, 'HH:mm').format('LT')}</p>
-					<p>Email: {event.contact_email}</p>
-					<p>Phone: {event.contact_phone}</p>
+				<div className='event-container'>
+					<div className='event-tile-name-and-category'>
+						<h1 className='event-tile-name'>{event.name}</h1>
+						<div className='event-tile-category'>
+							{event.category}
+						</div>
+					</div>
+
+					<div className='event-tile-date-and-time'>
+						{moment(event.date).format('DD MMM, YYYY')} at{' '}
+						{moment(event.time, 'HH:mm').format('LT')}
+					</div>
+					<div className='event-tile-location-container'>
+						<img
+							src={locationPing}
+							alt=''
+						/>
+						<div className='event-tile-location'>
+							Location: 123 Street st.
+						</div>
+					</div>
+					<div className='event-tile-description-and-contact-info'>
+						<div className='event-tile-contact-info'>
+							<div className='event-tile-phone-container'>
+								<img
+									src={phoneIcon}
+									alt=''
+								/>
+								<div className='event-tile-phone'>
+									{event.contact_phone}
+								</div>
+							</div>
+							<div className='event-tile-email-container'>
+								<img
+									src={mailIcon}
+									alt=''
+								/>
+								<div className='event-tile-email'>
+									{event.contact_email}
+								</div>
+							</div>
+						</div>
+						<div className='event-tile-description'>
+							{event.description}
+						</div>
+					</div>
 					<div className='comments-container'>
+						<h1>Comments:</h1>
 						<div className='new-comment'>
 							<textarea
+								className='new-comment-text'
 								name='new-comment-text'
 								cols='30'
 								rows='10'
@@ -165,20 +213,23 @@ export default function Event() {
 									setNewCommentText(e.target.value)
 								}
 							></textarea>
-							<button onClick={handlePostComment}>
+							<button
+								id='post-comment-button'
+								onClick={handlePostComment}
+							>
 								Post Comment
 							</button>
 						</div>
 						<div className='comments-list'>
-							<h3>Comments:</h3>
 							<ul>
 								{comments.map((comment) => (
 									<div key={comment.comment_id}>
 										{/* Render comment text or editable textarea */}
 										{editingCommentId ===
 										comment.comment_id ? (
-											<div>
+											<div className='edit-comment'>
 												<textarea
+													className='edit-comment-text'
 													name='edit-comment-text'
 													cols='30'
 													rows='10'
@@ -190,6 +241,15 @@ export default function Event() {
 													}
 												/>
 												<button
+													id='cancel-edit-button'
+													onClick={
+														handleCancelEditComment
+													}
+												>
+													Cancel
+												</button>
+												<button
+													id='save-edit-button'
 													onClick={() =>
 														handleSaveEdit(
 															comment.comment_id,
@@ -199,32 +259,32 @@ export default function Event() {
 												>
 													Save
 												</button>
-												<button
-													onClick={
-														handleCancelEditComment
-													}
-												>
-													Cancel
-												</button>
 											</div>
 										) : (
-											<div>
-												<p>{comment.comment_text}</p>
-												<p>
-													{moment(
-														comment.timestamp
-													).format('DD MMM, LT')}
-												</p>
-												<p>
-													User:{' '}
-													{usernames[
-														comment.user_id
-													] || 'Unknown User'}
-												</p>
+											<div className='comment'>
+												<div className='comment-info'>
+													<div className='comment-username-and-timestamp'>
+														{' '}
+														{usernames[
+															comment.user_id
+														] ||
+															'Unknown User'}{' '}
+														-{' '}
+														{moment(
+															comment.timestamp
+														).format('DD MMM, LT')}
+													</div>
+
+													<div className='comment-text'>
+														{comment.comment_text}
+													</div>
+												</div>
+
 												{comment.user_id ===
 													userAndEvent.user
 														.user_id && (
 													<button
+														id='edit-comment-button'
 														onClick={() =>
 															handleEditComment(
 																comment.comment_id,
@@ -232,7 +292,7 @@ export default function Event() {
 															)
 														}
 													>
-														Edit Comment
+														Edit
 													</button>
 												)}
 											</div>
