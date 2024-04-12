@@ -1,9 +1,12 @@
+.login-page {
+  margin: 80px 140px;
+}
+
 .loginOrRegister {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  background-color: #f5f5f5; /* Light grey background */
+  height: 80vh;
 }
 
 .loginOrRegister .loginForm,
@@ -16,11 +19,16 @@
   margin-right: 20px; /* Spacing between forms */
 }
 
+.register {
+  margin-right: 50px;
+}
+
 .loginOrRegister .inputField {
   margin-bottom: 15px;
 }
 
 .loginOrRegister .inputField label {
+  text-align: left;
   display: block;
   margin-bottom: 5px;
 }

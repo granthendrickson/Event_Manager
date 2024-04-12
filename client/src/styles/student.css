@@ -135,9 +135,17 @@ ul {
   border-radius: 10px;
 }
 
+.rso-tile-name-and-admin-container {
+  text-align: left;
+}
+
 .rso-tile-name {
   margin-left: 18px;
   font-size: 20px;
+}
+
+.rso-tile-admin {
+  margin-left: 18px;
 }
 
 .rso-membership-status {
@@ -158,6 +166,15 @@ ul {
 .create-event-name-and-category {
   display: flex;
   justify-content: space-between;
+}
+
+#approve-rso-button {
+  background-color: #4C9EFF;
+  color: white;
+  border-radius: 5px;
+  border: none;
+  height: 50px;
+  margin-right: 18px;
 }
 
 #event-name-input {

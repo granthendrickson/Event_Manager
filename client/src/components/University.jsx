@@ -30,12 +30,13 @@ export default function University(props) {
 	}, [university_id]);
 
 	return (
-		<div>
+		<div className='university'>
 			{university && (
 				<div>
-					<h2>{university.name}</h2>
-					<p>Location: {university.location}</p>
-					<p>Description: {university.description}</p>
+					<h2>
+						{university.name} - {university.location}
+					</h2>
+					<p>{university.description}</p>
 					{/* Add more details as needed */}
 					<PendingRSOs university_id={university_id} />
 				</div>

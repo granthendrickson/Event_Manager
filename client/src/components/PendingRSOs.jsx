@@ -83,9 +83,22 @@ export default function PendingRSOs(props) {
 					<h2>Pending RSOs</h2>
 					<ul>
 						{pendingRSOs.map((rso) => (
-							<div key={rso.rso_id}>
-								{rso.name} - Admin: {getUsername(rso.admin_id)}
-								<button onClick={() => approveRSO(rso.rso_id)}>
+							<div
+								className='rso-tile'
+								key={rso.rso_id}
+							>
+								<div className='rso-tile-name-and-admin-container'>
+									<div className='rso-tile-name'>
+										{rso.name}
+									</div>
+									<div className='rso-tile-admin'>
+										Admin: {getUsername(rso.admin_id)}
+									</div>
+								</div>
+								<button
+									id='approve-rso-button'
+									onClick={() => approveRSO(rso.rso_id)}
+								>
 									Approve RSO
 								</button>
 							</div>

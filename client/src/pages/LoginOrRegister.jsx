@@ -8,9 +8,14 @@ import '../styles/loginRegister.css';
 
 export default function LoginOrRegister() {
 	return (
-		<div className='loginOrRegister'>
-			<Register />
-			<Login />
+		<div className='login-page'>
+			<div className='student-page-header'>
+				<h1>College Event Manager</h1>
+			</div>
+			<div className='loginOrRegister'>
+				<Register />
+				<Login />
+			</div>
 		</div>
 	);
 }

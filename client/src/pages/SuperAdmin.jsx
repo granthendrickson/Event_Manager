@@ -15,8 +15,10 @@ export default function SuperAdmin() {
 	console.log(user);
 
 	return (
-		<div>
-			<h1>Super Admin Dashboard</h1>
+		<div className='super-admin-page'>
+			<div className='super-admin-page-header'>
+				<h1>Super Admin Dashboard</h1>
+			</div>
 			{user.university_id === null ? (
 				<CreateUniversity />
 			) : (

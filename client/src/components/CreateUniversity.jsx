@@ -7,7 +7,6 @@ export default function CreateUniversity() {
 		location: '',
 		description: '',
 		number_of_students: 0,
-		pictures: '',
 	});
 
 	// Function to handle input changes
@@ -64,15 +63,6 @@ export default function CreateUniversity() {
 						value={university.description}
 						onChange={handleInputChange}
 					></textarea>
-				</div>
-				<div className='inputField'>
-					<label>Pictures:</label>
-					<input
-						type='text'
-						name='pictures'
-						value={university.pictures}
-						onChange={handleInputChange}
-					/>
 				</div>
 				<div className='buttonContainer'>
 					<button onClick={handleCreateUniversity}>
