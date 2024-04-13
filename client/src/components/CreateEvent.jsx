@@ -50,6 +50,7 @@ export default function CreateEvent(props) {
 	const [libraries] = useState(['places']);
 	const [createdLocation, setCreatedLocation] = useState(null);
 	const [rsoList, setRsoList] = useState([]);
+	const [eventCreated, setEventCreated] = useState(false);
 
 	const { isLoaded, loadError } = useLoadScript({
 		googleMapsApiKey: 'AIzaSyBH4Ka4wzj7gy4NmfRlANFQFO3gHMPmyYk',
@@ -82,6 +83,7 @@ export default function CreateEvent(props) {
 			}
 			const newEvent = await response.json();
 			console.log('New event created:', newEvent);
+			setEventCreated(true);
 		} catch (error) {
 			console.error('Error creating event:', error);
 		}
@@ -101,7 +103,7 @@ export default function CreateEvent(props) {
 		const fetchRsoList = async () => {
 			try {
 				const response = await fetch(
-					`http://localhost:8080/RSOs/${user.user_id}`
+					`http://localhost:8080/RSOs/admin/${user.user_id}`
 				);
 				if (!response.ok) {
 					throw new Error('Failed to fetch RSOs');
@@ -262,6 +264,11 @@ export default function CreateEvent(props) {
 					</div>
 				)}
 
+				{event.visibility === 'public'
+					? ((event.approval_status = 'pending'),
+					  (event.rso_id = null))
+					: null}
+
 				<div className='buttonContainer'>
 					<button
 						id='create-event-button'
@@ -269,6 +276,7 @@ export default function CreateEvent(props) {
 					>
 						Create Event
 					</button>
+					{eventCreated && <h2>Event Created</h2>}
 				</div>
 			</div>
 		</div>

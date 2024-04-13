@@ -5,6 +5,7 @@ export default function CreateRSO() {
 	const [RSO, setRSO] = useState({
 		name: '',
 		admin_id: '',
+		university_id: '',
 		admin_email: '',
 		student1_email: '',
 		student2_email: '',
@@ -12,6 +13,7 @@ export default function CreateRSO() {
 	});
 
 	const [universities, setUniversities] = useState([]);
+	const [requestSent, setRequestSent] = useState(false);
 
 	// Function to handle input changes
 	const handleInputChange = (e) => {
@@ -100,6 +102,7 @@ export default function CreateRSO() {
 			}
 			const newRSO = await response.json();
 			console.log('New RSO created:', newRSO);
+			setRequestSent(true);
 
 			// Create UserRSOMemberships
 			const student1MembershipResponse = await fetch(
@@ -209,6 +212,24 @@ export default function CreateRSO() {
 						onChange={handleInputChange}
 					/>
 				</div>
+				<div className='inputField'>
+					<label>Universities:</label>
+					<select
+						name='university_id'
+						value={RSO.university_id}
+						onChange={handleInputChange}
+					>
+						<option value=''>Select University</option>
+						{universities.map((uni) => (
+							<option
+								key={uni.university_id}
+								value={uni.university_id}
+							>
+								{uni.name}
+							</option>
+						))}
+					</select>
+				</div>
 				<div className='buttonContainer'>
 					<button
 						id='create-rso-button'
@@ -216,6 +237,7 @@ export default function CreateRSO() {
 					>
 						Create RSO
 					</button>
+					{requestSent && <h2>Request Sent</h2>}
 				</div>
 			</div>
 		</div>

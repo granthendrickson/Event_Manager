@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 
-export default function CreateUniversity() {
+export default function CreateUniversity(props) {
+	const { user_id } = props;
+
 	// Initialize state to store input values
 	const [university, setUniversity] = useState({
 		name: '',
@@ -29,8 +31,27 @@ export default function CreateUniversity() {
 			}
 			const newUniversity = await response.json();
 			console.log('New university created:', newUniversity);
+
+			// Update user with university_id
+			const updateUserResponse = await fetch(
+				`http://localhost:8080/Users/${user_id}`,
+				{
+					method: 'PUT',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						university_id: newUniversity.university_id,
+					}),
+				}
+			);
+			if (!updateUserResponse.ok) {
+				throw new Error('Failed to update user with university_id');
+			}
+			const updatedUser = await updateUserResponse.json();
+			console.log('User updated with university_id:', updatedUser);
 		} catch (error) {
-			console.error('Error creating university:', error);
+			console.error('Error creating university or updating user:', error);
 		}
 	};
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 // Components
 import PendingRSOs from './PendingRSOs';
+import PendingEvents from './PendingEvents';
 
 export default function University(props) {
 	const { university_id } = props;
@@ -38,6 +39,7 @@ export default function University(props) {
 					</h2>
 					<p>{university.description}</p>
 					{/* Add more details as needed */}
+					<PendingEvents university_id={university_id} />
 					<PendingRSOs university_id={university_id} />
 				</div>
 			)}

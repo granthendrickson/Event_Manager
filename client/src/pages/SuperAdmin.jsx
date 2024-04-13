@@ -20,7 +20,7 @@ export default function SuperAdmin() {
 				<h1>Super Admin Dashboard</h1>
 			</div>
 			{user.university_id === null ? (
-				<CreateUniversity />
+				<CreateUniversity user_id={user.user_id} />
 			) : (
 				<University university_id={user.university_id} />
 			)}

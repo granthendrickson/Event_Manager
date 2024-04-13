@@ -124,6 +124,31 @@ app.post('/Login', async (req, res) => {
 	}
 });
 
+// Update user information
+app.put('/Users/:user_id', async (req, res) => {
+	const user_id = req.params.user_id;
+	const { university_id } = req.body;
+
+	try {
+		// Update the user's university_id in the database
+		await pool.query(
+			`UPDATE Users
+					 SET university_id = ?
+					 WHERE user_id = ?`,
+			[university_id, user_id]
+		);
+
+		// Fetch the updated user from the database
+		const updatedUser = await getUser(user_id);
+
+		// Send the updated user as the response
+		res.status(200).send(updatedUser);
+	} catch (error) {
+		console.error('Error updating user:', error);
+		res.status(500).send({ error: 'Internal server error' });
+	}
+});
+
 app.get('/GetUserIDByEmail/:email', async (req, res) => {
 	const email = req.params.email;
 
@@ -215,16 +240,56 @@ app.get('/UserEvents/:user_id', async (req, res) => {
 		// Fetch events that the user has access to
 		const [events] = await pool.query(
 			`SELECT * FROM Events 
-					WHERE (visibility = 'public' OR (visibility = 'private' AND university_id = ?)) 
-					OR (visibility = 'rso' AND EXISTS 
-							(SELECT 1 FROM UserRSOMemberships 
-							WHERE user_id = ? AND rso_id = Events.rso_id))`,
-			[university_id, user_id]
+				WHERE ((visibility = 'public' AND approval_status = 'approved') OR 
+						(visibility = 'private' AND university_id = ?) OR 
+						(visibility = 'rso' AND EXISTS 
+								(SELECT 1 FROM UserRSOMemberships 
+								WHERE user_id = ? AND rso_id = Events.rso_id)) OR 
+						(visibility = 'rso' AND EXISTS 
+								(SELECT 1 FROM RSOs 
+								WHERE admin_id = ? AND rso_id = Events.rso_id)))`,
+			[university_id, user_id, user_id]
 		);
 
 		res.send(events);
 	} catch (error) {
 		console.error('Error fetching user events:', error);
+		res.status(500).send({ error: 'Internal server error' });
+	}
+});
+
+app.get('/PendingEvents/:university_id', async (req, res) => {
+	const universityId = req.params.university_id;
+
+	try {
+		// Fetch events with the specified university_id and approval_status of "pending"
+		const [pendingEvents] = await pool.query(
+			`SELECT * FROM Events WHERE university_id = ? AND approval_status = 'pending'`,
+			[universityId]
+		);
+
+		res.send(pendingEvents);
+	} catch (error) {
+		console.error('Error fetching pending events:', error);
+		res.status(500).send({ error: 'Internal server error' });
+	}
+});
+
+app.post('/Events/approve/:event_id', async (req, res) => {
+	const eventId = req.params.event_id;
+
+	try {
+		// Update the approval status of the RSO to "approved"
+		await pool.query(
+			`UPDATE Events
+					 SET approval_status = 'approved'
+					 WHERE event_id = ?`,
+			[eventId]
+		);
+
+		res.sendStatus(200);
+	} catch (error) {
+		console.error('Error approving Event:', error);
 		res.status(500).send({ error: 'Internal server error' });
 	}
 });
@@ -379,8 +444,24 @@ app.get('/RSOs/pending/:university_id', async (req, res) => {
 	}
 });
 
+app.get('/RSOs/approved/:university_id', async (req, res) => {
+	const universityId = req.params.university_id;
+
+	try {
+		const [rsoList] = await pool.query(
+			`SELECT * FROM RSOs WHERE university_id = ? AND approval_status = 'approved'`,
+			[universityId]
+		);
+		res.send(rsoList);
+	} catch (error) {
+		console.error('Error fetching pending RSOs:', error);
+		res.status(500).send({ error: 'Internal server error' });
+	}
+});
+
 app.post('/RSOs/approve/:rsoId', async (req, res) => {
 	const rsoId = req.params.rsoId;
+	const adminId = req.body.adminId; // Access adminId from req.body.adminId
 
 	try {
 		// Update the approval status of the RSO to "approved"
@@ -389,6 +470,14 @@ app.post('/RSOs/approve/:rsoId', async (req, res) => {
 					 SET approval_status = 'approved'
 					 WHERE rso_id = ?`,
 			[rsoId]
+		);
+
+		// Update the user_level of the admin user to 'admin'
+		await pool.query(
+			`UPDATE Users
+			 SET user_level = 'admin'
+			 WHERE user_id = ?`,
+			[adminId]
 		);
 
 		res.sendStatus(200);

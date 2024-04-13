@@ -15,6 +15,7 @@ export default function Student() {
 	const user = location.state;
 	const [events, setEvents] = useState([]);
 	const [rsoList, setRsoList] = useState([]);
+	const [universityRsoList, setUniversityRsoList] = useState([]);
 	const [showCreateEventForm, setShowCreateEventForm] = useState(false);
 	const [showCreateRSOForm, setShowCreateRSOForm] = useState(false);
 	const [showRSOs, setShowRSOs] = useState(true);
@@ -61,6 +62,25 @@ export default function Student() {
 
 		fetchRsoList();
 	}, [user.user_id]);
+
+	useEffect(() => {
+		const fetchUniversityRsoList = async () => {
+			try {
+				const response = await fetch(
+					`http://localhost:8080/RSOs/approved/${user.university_id}`
+				);
+				if (!response.ok) {
+					throw new Error('Failed to fetch RSOs');
+				}
+				const data = await response.json();
+				setUniversityRsoList(data);
+			} catch (error) {
+				console.error('Error fetching RSOs:', error);
+			}
+		};
+
+		fetchUniversityRsoList();
+	}, [user.university_id]);
 
 	const toggleCreateEventForm = () => {
 		setShowCreateEventForm(true);
@@ -114,7 +134,6 @@ export default function Student() {
 					<div className='events-list'>
 						<ul>
 							{events.map((event) => (
-								// <li key={event.event_id}>{event.name}</li>
 								<EventTile
 									key={event.event_id}
 									event_id={event.event_id}
@@ -157,6 +176,21 @@ export default function Student() {
 											Member
 										</div>
 									)}
+								</div>
+							))}
+						</ul>
+
+						<h2 id='rso-header'>RSOs at your university:</h2>
+						<ul>
+							{universityRsoList.map((rso) => (
+								<div
+									className='rso-tile'
+									onClick={() => toRSOPage(user, rso)}
+									key={rso.rso_id}
+								>
+									<h1 className='rso-tile-name'>
+										{rso.name}
+									</h1>
 								</div>
 							))}
 						</ul>

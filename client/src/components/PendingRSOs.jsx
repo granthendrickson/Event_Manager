@@ -17,6 +17,7 @@ export default function PendingRSOs(props) {
 			}
 			const data = await response.json();
 			setPendingRSOs(data);
+			console.log(pendingRSOs);
 		} catch (error) {
 			console.error('Error fetching pending RSOs:', error);
 		}
@@ -58,12 +59,16 @@ export default function PendingRSOs(props) {
 		return adminUsernames[adminId] || 'Unknown';
 	};
 
-	const approveRSO = async (rsoId) => {
+	const approveRSO = async (rsoId, adminId) => {
 		try {
 			const response = await fetch(
 				`http://localhost:8080/RSOs/approve/${rsoId}`,
 				{
 					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ adminId: adminId }),
 				}
 			);
 			if (!response.ok) {
@@ -97,7 +102,9 @@ export default function PendingRSOs(props) {
 								</div>
 								<button
 									id='approve-rso-button'
-									onClick={() => approveRSO(rso.rso_id)}
+									onClick={() =>
+										approveRSO(rso.rso_id, rso.admin_id)
+									}
 								>
 									Approve RSO
 								</button>

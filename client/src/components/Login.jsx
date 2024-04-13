@@ -87,7 +87,6 @@ export default function Login() {
 				</div>
 				<div className='buttonContainer'>
 					<button onClick={handleLogin}>Login</button>
-					<div className='username'>{loginStatus}</div>
 				</div>
 			</div>
 		</div>

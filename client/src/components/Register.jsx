@@ -16,7 +16,6 @@ export default function Register() {
 	const handleInputChange = (e) => {
 		const { name, value } = e.target;
 		setUser({ ...user, [name]: value });
-		console.log(user);
 	};
 
 	const handleCreateUser = async () => {
@@ -109,6 +108,7 @@ export default function Register() {
 							value={user.university_id}
 							onChange={handleInputChange}
 						>
+							<option value=''>Select University</option>
 							{universities.map((uni) => (
 								<option
 									key={uni.university_id}
