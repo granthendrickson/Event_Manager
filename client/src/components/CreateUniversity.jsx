@@ -8,7 +8,7 @@ export default function CreateUniversity(props) {
 		name: '',
 		location: '',
 		description: '',
-		number_of_students: 0,
+		number_of_students: '',
 	});
 
 	// Function to handle input changes
@@ -82,6 +82,14 @@ export default function CreateUniversity(props) {
 					<textarea
 						name='description'
 						value={university.description}
+						onChange={handleInputChange}
+					></textarea>
+				</div>
+				<div className='inputField'>
+					<label>Number of Students:</label>
+					<textarea
+						name='description'
+						value={university.number_of_students}
 						onChange={handleInputChange}
 					></textarea>
 				</div>

@@ -14,11 +14,33 @@ export default function Event() {
 	const location = useLocation();
 	const userAndEvent = location.state;
 	const [event, setEvent] = useState(null);
+	const [eventLocation, setEventLocation] = useState(null);
 	const [comments, setComments] = useState([]);
 	const [usernames, setUsernames] = useState({});
 	const [newCommentText, setNewCommentText] = useState('');
 	const [editingCommentId, setEditingCommentId] = useState(null);
 	const [editCommentText, setEditCommentText] = useState('');
+
+	useEffect(() => {
+		const fetchLocation = async () => {
+			try {
+				const response = await fetch(
+					`http://localhost:8080/Locations/${event.location_id}`
+				);
+
+				if (!response.ok) {
+					throw new Error('Failed to fetch location');
+				}
+
+				const data = await response.json();
+				setEventLocation(data);
+			} catch (error) {
+				console.error('Error fetching location:', error);
+			}
+		};
+
+		fetchLocation();
+	}, [event]);
 
 	const fetchComments = async () => {
 		try {
@@ -172,7 +194,7 @@ export default function Event() {
 							alt=''
 						/>
 						<div className='event-tile-location'>
-							Location: 123 Street st.
+							{eventLocation ? eventLocation.name : 'Loading...'}
 						</div>
 					</div>
 					<div className='event-tile-description-and-contact-info'>

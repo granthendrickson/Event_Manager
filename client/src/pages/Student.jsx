@@ -139,6 +139,7 @@ export default function Student() {
 									event_id={event.event_id}
 									name={event.name}
 									category={event.category}
+									location_id={event.location_id}
 									date={moment(event.date).format(
 										'DD MMM, YYYY'
 									)}

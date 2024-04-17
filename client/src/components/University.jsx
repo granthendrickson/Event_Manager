@@ -35,7 +35,8 @@ export default function University(props) {
 			{university && (
 				<div>
 					<h2>
-						{university.name} - {university.location}
+						{university.name} - {university.location} - Students:{' '}
+						{university.number_of_students}
 					</h2>
 					<p>{university.description}</p>
 					{/* Add more details as needed */}

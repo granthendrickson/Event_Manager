@@ -609,6 +609,29 @@ app.post('/Locations', async (req, res) => {
 	}
 });
 
+app.get('/Locations/:location_id', async (req, res) => {
+	const { location_id } = req.params;
+
+	try {
+		// Fetch the location from the database based on location_id
+		const [location] = await pool.query(
+			'SELECT * FROM Locations WHERE location_id = ?',
+			[location_id]
+		);
+
+		// Check if the location exists
+		if (location.length === 0) {
+			return res.status(404).send({ error: 'Location not found' });
+		}
+
+		// Return the location
+		res.status(200).send(location[0]);
+	} catch (error) {
+		console.error('Error fetching location:', error);
+		res.status(500).send({ error: 'Internal server error' });
+	}
+});
+
 app.post('/Comments', async (req, res) => {
 	const { event_id, user_id, comment_text } = req.body;
 

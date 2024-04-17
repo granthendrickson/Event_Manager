@@ -85,7 +85,7 @@ export default function PendingRSOs(props) {
 		<div>
 			{pendingRSOs ? (
 				<div>
-					<h2>Pending RSOs</h2>
+					<h2>Pending RSOs:</h2>
 					<ul>
 						{pendingRSOs.map((rso) => (
 							<div

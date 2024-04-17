@@ -79,7 +79,7 @@ export default function Login() {
 				<div className='inputField'>
 					<label>Password:</label>
 					<input
-						type='text'
+						type='password'
 						name='password'
 						value={user.password}
 						onChange={handleInputChange}

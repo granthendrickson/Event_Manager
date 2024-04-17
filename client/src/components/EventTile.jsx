@@ -23,8 +23,9 @@ export default function EventTile(props) {
 	} = props;
 
 	const [userAndEvent, setUserAndEvent] = useState(null);
-
+	const [location, setLocation] = useState(null);
 	const navigate = useNavigate();
+
 	const toEventPage = (userAndEvent) => {
 		navigate('../pages/Event.jsx', { state: userAndEvent });
 	};
@@ -32,6 +33,27 @@ export default function EventTile(props) {
 	const handleNavigationToEventPage = async () => {
 		toEventPage(userAndEvent);
 	};
+
+	useEffect(() => {
+		const fetchLocation = async () => {
+			try {
+				const response = await fetch(
+					`http://localhost:8080/Locations/${location_id}`
+				);
+
+				if (!response.ok) {
+					throw new Error('Failed to fetch location');
+				}
+
+				const data = await response.json();
+				setLocation(data);
+			} catch (error) {
+				console.error('Error fetching location:', error);
+			}
+		};
+
+		fetchLocation();
+	}, [location_id]);
 
 	useEffect(() => {
 		const temp = { user, event_id };
@@ -51,13 +73,14 @@ export default function EventTile(props) {
 			<div className='event-tile-date-and-time'>
 				{date} at {time}
 			</div>
+
 			<div className='event-tile-location-container'>
 				<img
 					src={locationPing}
 					alt=''
 				/>
 				<div className='event-tile-location'>
-					Location: 123 Street st.
+					Location: {location ? location.name : 'Loading...'}
 				</div>
 			</div>
 
